@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BALI PREP — 33 Day Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #080808;
+  --surface: #111111;
+  --surface2: #181818;
+  --surface3: #222222;
+  --border: #2a2a2a;
+  --ocean: #1a6b8a;
+  --ocean-lt: #2a8fb0;
+  --ocean-dim: rgba(26,107,138,0.15);
+  --gold: #c9a84c;
+  --gold-lt: #e8c97a;
+  --gold-dim: rgba(201,168,76,0.12);
+  --green: #2d7a54;
+  --green-lt: #3d9a68;
+  --green-dim: rgba(45,122,84,0.12);
+  --jaw: #8b4a9c;
+  --jaw-lt: #aa6abd;
+  --jaw-dim: rgba(139,74,156,0.12);
+  --red: #c23b22;
+  --white: #f0ede8;
+  --muted: #6a6460;
+  --muted2: #4a4640;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── HERO ── */
+.hero {
+  padding: 48px 20px 36px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content:'';
+  position:absolute;
+  top:-60px; left:50%;
+  transform:translateX(-50%);
+  width:500px; height:300px;
+  background: radial-gradient(ellipse, rgba(26,107,138,0.18) 0%, transparent 70%);
+  pointer-events:none;
+}
+.hero-badge {
+  display:inline-block;
+  font-size:10px; letter-spacing:3px; text-transform:uppercase;
+  color:var(--gold); border:1px solid rgba(201,168,76,0.35);
+  padding:5px 14px; margin-bottom:18px;
+}
+.hero h1 {
+  font-family:'Bebas Neue',sans-serif;
+  font-size: clamp(56px,14vw,96px);
+  line-height:0.9; letter-spacing:2px;
+  color:var(--white); margin-bottom:2px;
+}
+.hero h1 span { color:var(--ocean-lt); }
+.hero-sub {
+  font-size:12px; color:var(--muted); letter-spacing:1px;
+  margin-top:14px; line-height:1.6;
+  max-width:360px; margin-left:auto; margin-right:auto;
+}
+
+/* ── PROGRESS BAR ── */
+.progress-wrap {
+  padding:20px 20px 0;
+  max-width:900px; margin:0 auto;
+}
+.prog-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+.prog-label { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); }
+.prog-val { font-family:'Bebas Neue',sans-serif; font-size:20px; color:var(--gold); }
+.prog-bar { height:3px; background:var(--border); border-radius:2px; overflow:hidden; margin-bottom:20px; }
+.prog-fill { height:100%; background:linear-gradient(90deg,var(--ocean),var(--gold)); border-radius:2px; transition:width .5s ease; }
+
+/* ── TABS ── */
+.tabs {
+  display:flex; overflow-x:auto; -webkit-overflow-scrolling:touch;
+  scrollbar-width:none; border-bottom:1px solid var(--border);
+  background:var(--surface); position:sticky; top:0; z-index:50;
+}
+.tabs::-webkit-scrollbar { display:none; }
+.tab {
+  flex:0 0 auto; padding:12px 18px;
+  font-size:10px; letter-spacing:1.5px; text-transform:uppercase;
+  color:var(--muted); cursor:pointer; white-space:nowrap;
+  border-bottom:2px solid transparent; transition:all .2s;
+}
+.tab.active { color:var(--ocean-lt); border-bottom-color:var(--ocean-lt); }
+.tab .tab-check { margin-left:5px; font-size:9px; color:var(--gold); }
+
+/* ── MAIN LAYOUT ── */
+.main { max-width:900px; margin:0 auto; padding:20px; }
+.phase-section { display:none; }
+.phase-section.visible { display:block; }
+
+.phase-header { margin-bottom:20px; padding-bottom:14px; border-bottom:1px solid var(--border); }
+.phase-name { font-family:'Bebas Neue',sans-serif; font-size:32px; letter-spacing:2px; }
+.phase-meta { font-size:11px; color:var(--muted); margin-top:4px; line-height:1.6; }
+
+/* ── DAY CARD ── */
+.day-card {
+  background:var(--surface);
+  border:1px solid var(--border);
+  margin-bottom:10px;
+  transition:border-color .2s;
+}
+.day-card.done { border-color:rgba(26,107,138,0.4); }
+.day-card.done .day-num { color:var(--ocean-lt); }
+
+.day-header {
+  display:flex; align-items:center; gap:12px;
+  padding:14px 16px; cursor:pointer;
+}
+.day-num {
+  font-family:'Bebas Neue',sans-serif; font-size:26px;
+  color:var(--border); min-width:34px; transition:color .2s;
+}
+.day-info { flex:1; min-width:0; }
+.day-title { font-size:13px; font-weight:500; margin-bottom:2px; }
+.day-tags { display:flex; gap:8px; flex-wrap:wrap; }
+.tag {
+  font-size:9px; letter-spacing:1px; text-transform:uppercase;
+  padding:2px 7px; border-radius:1px;
+}
+.tag-gym { background:var(--ocean-dim); color:var(--ocean-lt); }
+.tag-jaw { background:var(--jaw-dim); color:var(--jaw-lt); }
+.tag-surf { background:var(--green-dim); color:var(--green-lt); }
+.tag-rest { background:rgba(106,100,96,0.15); color:var(--muted); }
+
+.day-chevron {
+  font-size:10px; color:var(--muted); transition:transform .2s; flex-shrink:0;
+}
+.day-card.open .day-chevron { transform:rotate(180deg); }
+
+/* ── DAY BODY ── */
+.day-body { display:none; border-top:1px solid var(--border); }
+.day-card.open .day-body { display:block; }
+
+/* section within day body */
+.session-section { padding:14px 16px; border-bottom:1px solid var(--surface3); }
+.session-section:last-child { border-bottom:none; }
+.section-label {
+  font-size:9px; letter-spacing:2px; text-transform:uppercase;
+  margin-bottom:10px; display:flex; align-items:center; gap:8px;
+}
+.section-label::after {
+  content:''; flex:1; height:1px; background:var(--border);
+}
+
+/* ── EXERCISE ROW ── */
+.ex-row {
+  display:grid;
+  grid-template-columns: 22px 1fr auto;
+  gap:10px; align-items:start;
+  padding:8px 0;
+  border-bottom:1px solid var(--surface3);
+}
+.ex-row:last-child { border-bottom:none; }
+
+.ex-check {
+  width:20px; height:20px;
+  border:1.5px solid var(--border);
+  border-radius:2px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; margin-top:2px; transition:all .15s;
+  background:none;
+  color:transparent; font-size:11px;
+}
+.ex-row.checked .ex-check {
+  background:var(--ocean); border-color:var(--ocean); color:white;
+}
+.ex-row.checked .ex-name { text-decoration:line-through; color:var(--muted2); }
+
+.ex-main { min-width:0; }
+.ex-name { font-size:12px; font-weight:500; line-height:1.4; margin-bottom:3px; transition:all .2s; }
+.ex-sets { font-size:10px; color:var(--muted); font-style:italic; }
+
+.ex-inputs { display:flex; flex-direction:column; gap:4px; align-items:flex-end; }
+.weight-input {
+  width:90px; background:var(--surface2); border:1px solid var(--border);
+  color:var(--white); font-family:'DM Sans',sans-serif; font-size:11px;
+  padding:5px 8px; outline:none; text-align:right;
+  transition:border-color .2s;
+}
+.weight-input:focus { border-color:var(--ocean); }
+.weight-input::placeholder { color:var(--muted2); }
+.proj-text {
+  font-size:9px; color:var(--gold); text-align:right;
+  letter-spacing:0.5px; min-height:13px;
+}
+
+/* ── JAW EXERCISE (purple accent) ── */
+.jaw-ex .ex-check { border-color:var(--jaw); }
+.jaw-ex.checked .ex-check { background:var(--jaw); border-color:var(--jaw); }
+.jaw-ex .weight-input:focus { border-color:var(--jaw); }
+.jaw-ex .proj-text { color:var(--jaw-lt); }
+
+/* ── COACH NOTE ── */
+.coach-note {
+  margin:10px 0 0;
+  padding:10px 12px;
+  background:rgba(201,168,76,0.05);
+  border-left:2px solid var(--gold);
+  font-size:11px; color:var(--muted); line-height:1.6;
+  font-style:italic;
+}
+.coach-note strong { color:var(--gold); font-style:normal; font-size:9px; letter-spacing:1px; text-transform:uppercase; }
+
+/* ── DAY COMPLETE BUTTON ── */
+.day-complete-btn {
+  width:100%; padding:11px;
+  background:transparent; border:none; border-top:1px solid var(--border);
+  color:var(--muted); font-family:'DM Sans',sans-serif;
+  font-size:10px; letter-spacing:2px; text-transform:uppercase;
+  cursor:pointer; transition:all .2s;
+}
+.day-complete-btn:hover { background:var(--ocean-dim); color:var(--ocean-lt); }
+.day-card.done .day-complete-btn { color:var(--ocean-lt); background:var(--ocean-dim); }
+
+/* ── GUIDE TAB ── */
+.guide-section { padding:20px 0; }
+.guide-card {
+  background:var(--surface); border:1px solid var(--border);
+  padding:18px; margin-bottom:10px;
+}
+.guide-card-title {
+  font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:1px;
+  color:var(--ocean-lt); margin-bottom:8px;
+}
+.guide-card p { font-size:12px; color:var(--muted); line-height:1.7; }
+.guide-card p + p { margin-top:8px; }
+
+/* ── STATS TAB ── */
+.stats-grid {
+  display:grid; grid-template-columns:repeat(2,1fr); gap:10px;
+  margin-bottom:20px;
+}
+.stat-box {
+  background:var(--surface); border:1px solid var(--border);
+  padding:16px; text-align:center;
+}
+.stat-val { font-family:'Bebas Neue',sans-serif; font-size:36px; color:var(--ocean-lt); }
+.stat-lbl { font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-top:4px; }
+
+footer {
+  text-align:center; padding:28px 20px;
+  font-size:9px; letter-spacing:2px; text-transform:uppercase;
+  color:var(--muted2); border-top:1px solid var(--border);
+}
+
+/* ── MEAL SECTION ── */
+--meal: #b05a2a;
+--meal-lt: #d4784a;
+--meal-dim: rgba(176,90,42,0.12);
+
+.tag-meal { background:rgba(176,90,42,0.15); color:#d4784a; }
+
+.meal-row {
+  display:flex; align-items:center; gap:10px;
+  padding:8px 0; border-bottom:1px solid var(--surface3);
+}
+.meal-row:last-of-type { border-bottom:none; }
+
+.meal-check {
+  width:20px; height:20px; border:1.5px solid #b05a2a;
+  border-radius:2px; cursor:pointer; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  background:none; color:transparent; font-size:11px; transition:all .15s;
+}
+.meal-row.checked .meal-check { background:#b05a2a; border-color:#b05a2a; color:white; }
+.meal-row.checked .meal-name { text-decoration:line-through; color:var(--muted2); }
+
+.meal-name { flex:1; font-size:12px; font-weight:500; line-height:1.4; }
+.meal-detail { font-size:10px; color:var(--muted); margin-top:2px; }
+.meal-cal { font-size:10px; color:#d4784a; text-align:right; flex-shrink:0; }
+
+/* ── COMMENTS ── */
+.comments-wrap { padding:14px 16px; border-top:1px solid var(--surface3); }
+.comments-label {
+  font-size:9px; letter-spacing:2px; text-transform:uppercase;
+  color:var(--muted); margin-bottom:8px; display:flex; align-items:center; gap:8px;
+}
+.comments-label::after { content:''; flex:1; height:1px; background:var(--border); }
+.comments-textarea {
+  width:100%; min-height:70px; background:var(--surface2);
+  border:1px solid var(--border); color:var(--white);
+  font-family:'DM Sans',sans-serif; font-size:12px; line-height:1.6;
+  padding:10px 12px; outline:none; resize:vertical;
+  transition:border-color .2s;
+}
+.comments-textarea:focus { border-color:#b05a2a; }
+.comments-textarea::placeholder { color:var(--muted2); }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">33 Day Advanced Program</div>
+  <h1>BALI<span>PREP</span></h1>
+  <p class="hero-sub">Strength · Surf Conditioning · Jaw Program · Nutrition<br>Track weights · Log sessions · See next-week projections</p>
+</div>
+
+<div class="progress-wrap">
+  <div class="prog-row">
+    <span class="prog-label">Overall Progress</span>
+    <span class="prog-val" id="prog-val">0 / 33 Days</span>
+  </div>
+  <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+</div>
+
+<div class="tabs" id="tabs"></div>
+<div class="main" id="main-content"></div>
+
+<footer>Bali Prep Program — 33 Days · Data saved locally in your browser</footer>
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Jaw exercises repeated daily (with phase-based scaling)
+function jawExercises(day) {
+  const p = day <= 11 ? 1 : day <= 22 ? 2 : 3;
+  return [
+    { id:'jaw_clench', name:'Jaw Clench Hold', sets: p===1?'3×15 sec': p===2?'5×25 sec':'6×30 sec', unit:'sec', jaw:true },
+    { id:'jaw_tongue', name:'Tongue Press (full tongue to roof)', sets: p===1?'3×10 sec': p===2?'4×15 sec':'5×20 sec', unit:'sec', jaw:true },
+    { id:'jaw_tuck',   name:'Chin Tuck', sets: p===1?'3×12': p===2?'4×15':'5×15', unit:'reps', jaw:true },
+    { id:'jaw_gum',    name:'Mastic/Hard Gum Chew', sets: p===1?'10 min': p===2?'20 min':'25 min', unit:'min', jaw:true, noWeight:true },
+  ];
+}
+
+// ── GYM WORKOUTS ──────────────────────────────────────────────────────────────
+const gymDays = {
+  1:  { title:'Upper Push + Surf Shoulder', tags:['gym','jaw'],
+        exercises:[
+          {id:'bench',    name:'Barbell Bench Press',       sets:'4×8 @75% 1RM',   unit:'kg'},
+          {id:'incline',  name:'Incline DB Press',          sets:'3×10',           unit:'kg'},
+          {id:'lateral',  name:'Cable Lateral Raise',       sets:'3×15',           unit:'kg'},
+          {id:'facepull', name:'Face Pull (cable, rope)',   sets:'4×15',           unit:'kg'},
+          {id:'extrot',   name:'Band External Rotation',    sets:'3×20 each',      unit:'kg', noWeight:true},
+          {id:'tricep',   name:'Tricep Rope Pushdown',      sets:'3×12',           unit:'kg'},
+          {id:'plank',    name:'Plank — arms extended',     sets:'3×45 sec',       unit:'sec', noWeight:true},
+        ],
+        note:'Face pulls and external rotations protect the rotator cuff for paddling. Start every push day with these.'},
+
+  2:  { title:'Lower Body — Squat + Plyos', tags:['gym','jaw'],
+        exercises:[
+          {id:'squat',    name:'Barbell Back Squat',        sets:'4×8 @75% 1RM',   unit:'kg'},
+          {id:'rdl',      name:'Romanian Deadlift',         sets:'3×10',           unit:'kg'},
+          {id:'legpress', name:'Leg Press',                 sets:'3×12',           unit:'kg'},
+          {id:'boxjump',  name:'Box Jump',                  sets:'4×6 — full reset each rep', unit:'cm', noWeight:true},
+          {id:'lunge',    name:'Walking Lunge',             sets:'3×12 each leg',  unit:'kg'},
+          {id:'hanglr',   name:'Hanging Leg Raise',         sets:'3×15',           unit:'reps', noWeight:true},
+          {id:'abwheel',  name:'Ab Wheel Rollout',          sets:'3×10',           unit:'reps', noWeight:true},
+        ],
+        note:'Box jumps are your surf pop-up power. Land soft, knees bent — same as landing a wave.'},
+
+  3:  { title:'Pull + Paddle Strength', tags:['gym','jaw'],
+        exercises:[
+          {id:'wpu',      name:'Weighted Pull-Up',          sets:'4×6–8',          unit:'kg'},
+          {id:'bbrow',    name:'Barbell Row',               sets:'4×8',            unit:'kg'},
+          {id:'sarow',    name:'Single-Arm DB Row',         sets:'3×10 each',      unit:'kg'},
+          {id:'latpull',  name:'Lat Pulldown (wide grip)',  sets:'3×10',           unit:'kg'},
+          {id:'ytw',      name:'Prone Y-T-W (cable/DB)',    sets:'3×12 each',      unit:'kg'},
+          {id:'hammer',   name:'Hammer Curl',               sets:'3×12',           unit:'kg'},
+          {id:'deadbug',  name:'Dead Bug',                  sets:'3×10 each side', unit:'reps', noWeight:true},
+        ],
+        note:'Prone Y-T-W directly trains the paddle pattern. Light weight — it\'s about muscle activation, not load.'},
+
+  4:  { title:'Active Recovery + Mobility', tags:['rest','jaw'],
+        exercises:[
+          {id:'abike',    name:'Assault Bike or Row Erg',   sets:'20 min easy — RPE 5/10', unit:'min', noWeight:true},
+          {id:'couch',    name:'Hip Flexor Couch Stretch',  sets:'2 min each side', unit:'sec', noWeight:true},
+          {id:'thorac',   name:'Thoracic Rotation (foam roller)', sets:'2 min each side', unit:'sec', noWeight:true},
+          {id:'hip9090',  name:'Hip 90/90 Stretch',         sets:'90 sec each',    unit:'sec', noWeight:true},
+          {id:'barhang',  name:'Lat/Shoulder Mobility (bar hang)', sets:'3×30 sec', unit:'sec', noWeight:true},
+        ],
+        note:'Tight hip flexors are the biggest killer of a clean pop-up. This session matters as much as any lift.'},
+
+  5:  { title:'Full Body + Surf Conditioning', tags:['gym','surf','jaw'],
+        exercises:[
+          {id:'tbdl',     name:'Trap Bar Deadlift',         sets:'4×8',            unit:'kg'},
+          {id:'ringpu',   name:'Push-Up (rings or weighted vest)', sets:'4×12',    unit:'kg'},
+          {id:'cablerow', name:'Cable Row — seated, neutral grip', sets:'4×10',    unit:'kg'},
+          {id:'kbswing',  name:'Kettlebell Swing',          sets:'4×15',           unit:'kg'},
+          {id:'popup',    name:'Pop-Up Drill — floor',      sets:'4×10 fast & clean', unit:'reps', noWeight:true},
+          {id:'pallof',   name:'Pallof Press — cable',      sets:'3×12 each side', unit:'kg'},
+          {id:'bosu',     name:'Single-Leg Balance on Bosu', sets:'3×30 sec each', unit:'sec', noWeight:true},
+        ],
+        note:'KB swings build explosive hip extension — same movement pattern as driving your hips through on a pop-up.'},
+
+  6:  { title:'Lower Body — Hinge + Core', tags:['gym','jaw'],
+        exercises:[
+          {id:'dead',     name:'Conventional Deadlift',     sets:'5×5 @80% 1RM',   unit:'kg'},
+          {id:'bss',      name:'Bulgarian Split Squat — DB', sets:'4×10 each',     unit:'kg'},
+          {id:'nordic',   name:'Nordic Hamstring Curl',     sets:'3×8 — slow eccentric', unit:'reps', noWeight:true},
+          {id:'hipth',    name:'Hip Thrust — barbell',      sets:'4×12',           unit:'kg'},
+          {id:'calfm',    name:'Calf Raise — seated machine', sets:'4×20',         unit:'kg'},
+          {id:'woodch',   name:'Cable Woodchop — high to low', sets:'3×12 each',   unit:'kg'},
+          {id:'hangkr',   name:'Hanging Knee Raise',        sets:'3×15',           unit:'reps', noWeight:true},
+        ],
+        note:'Nordics are brutal but bulletproof your hamstrings. Control the eccentric — 3–4 seconds down.'},
+
+  7:  { title:'Rest Day', tags:['rest','jaw'],
+        exercises:[
+          {id:'walk7',    name:'30–40 min walk or easy swim', sets:'',             unit:'min', noWeight:true},
+          {id:'str7',     name:'Full body stretch',          sets:'15 min',         unit:'min', noWeight:true},
+          {id:'mew7',     name:'Mewing + posture check all day', sets:'',          unit:'', noWeight:true},
+        ],
+        note:'Eat to the meal plan. No extras. Sleep 8 hours. This session matters.'},
+
+  8:  { title:'Upper Push + Press Variation', tags:['gym','jaw'],
+        exercises:[
+          {id:'ohp',      name:'Overhead Press — barbell',  sets:'4×8',            unit:'kg'},
+          {id:'incdb',    name:'DB Incline Press',           sets:'4×10',           unit:'kg'},
+          {id:'fly',      name:'Cable Chest Fly',            sets:'3×12',           unit:'kg'},
+          {id:'dips',     name:'Dips — weighted',            sets:'3×10–12',        unit:'kg'},
+          {id:'fp8',      name:'Face Pull',                  sets:'4×15',           unit:'kg'},
+          {id:'lat8',     name:'Lateral Raise — machine',    sets:'3×15',           unit:'kg'},
+          {id:'ptpike',   name:'Plank to Pike',              sets:'3×10',           unit:'reps', noWeight:true},
+        ],
+        note:'OHP builds overhead strength critical for duck-diving and paddle power on steep drops.'},
+
+  9:  { title:'Surf Conditioning — Endurance + Skills', tags:['surf','gym','jaw'],
+        exercises:[
+          {id:'row9',     name:'Row Erg 2000m — time it (BENCHMARK)', sets:'1 effort', unit:'min', noWeight:true},
+          {id:'popup9',   name:'Pop-Up Drill — explosive',  sets:'5×10',           unit:'reps', noWeight:true},
+          {id:'padsim9',  name:'Paddle Simulation (bench + DB row)', sets:'4×45 sec', unit:'kg'},
+          {id:'pistol9',  name:'Single-Leg Squat — pistol/assisted', sets:'3×8 each', unit:'reps', noWeight:true},
+          {id:'bear9',    name:'Bear Crawl',                sets:'4×20m',          unit:'m', noWeight:true},
+          {id:'db9',      name:'Dead Bug',                  sets:'3×10 each',      unit:'reps', noWeight:true},
+          {id:'sp9',      name:'Side Plank + Hip Dip',      sets:'3×12 each',      unit:'reps', noWeight:true},
+        ],
+        note:'Row 2000m is a benchmark — write your time in the weight field. You\'ll retest in Phase 3.'},
+
+  10: { title:'Pull Day — Volume', tags:['gym','jaw'],
+        exercises:[
+          {id:'pu10',     name:'Pull-Up — wide grip',       sets:'4×8–10',         unit:'kg'},
+          {id:'tbrow10',  name:'T-Bar Row or Machine Row',  sets:'4×10',           unit:'kg'},
+          {id:'sacrow10', name:'Single-Arm Cable Row',      sets:'3×12 each',      unit:'kg'},
+          {id:'fp10',     name:'Rope Face Pull',            sets:'4×15',           unit:'kg'},
+          {id:'curl10',   name:'Incline DB Curl',           sets:'3×12',           unit:'kg'},
+          {id:'rfly10',   name:'Cable Reverse Fly',         sets:'3×15',           unit:'kg'},
+          {id:'aw10',     name:'Ab Wheel',                  sets:'3×12',           unit:'reps', noWeight:true},
+        ],
+        note:'Volume pull day — keep rest to 60–75 sec. The density is the point.'},
+
+  11: { title:'Phase 1 Benchmark Day', tags:['gym','surf','jaw'],
+        exercises:[
+          {id:'bm_dl',    name:'Deadlift 5RM — find your number', sets:'',        unit:'kg'},
+          {id:'bm_pu',    name:'Pull-Up max reps',          sets:'',               unit:'reps', noWeight:true},
+          {id:'bm_push',  name:'Push-Up max reps — strict', sets:'',              unit:'reps', noWeight:true},
+          {id:'bm_run',   name:'1.5 km run — time it',      sets:'',              unit:'min', noWeight:true},
+          {id:'bm_popup', name:'Pop-Up Drill — 50 total reps', sets:'',           unit:'reps', noWeight:true},
+          {id:'bm_row',   name:'Row Erg 500m sprint — time it', sets:'',          unit:'sec', noWeight:true},
+        ],
+        note:'Record everything. These numbers are your Phase 1 baseline — you retest at Day 33.'},
+
+  // ── PHASE 2 ──
+  12: { title:'Upper Push — Heavy + Surf Shoulder', tags:['gym','jaw'],
+        exercises:[
+          {id:'b12',      name:'Barbell Bench Press',       sets:'5×5 @80–85% 1RM', unit:'kg'},
+          {id:'sp12',     name:'DB Shoulder Press — seated', sets:'4×10',          unit:'kg'},
+          {id:'lat12',    name:'Cable Lateral Raise',       sets:'4×15',            unit:'kg'},
+          {id:'fp12',     name:'Face Pull',                 sets:'4×15',            unit:'kg'},
+          {id:'er12',     name:'Band External Rotation',    sets:'3×20 each',       unit:'reps', noWeight:true},
+          {id:'sk12',     name:'Skull Crusher — EZ bar',    sets:'3×12',            unit:'kg'},
+          {id:'hb12',     name:'Hollow Body Hold',          sets:'3×30 sec',        unit:'sec', noWeight:true},
+        ],
+        note:'Phase 2 adds load. 5×5 on bench — if you hit all reps, add 2.5 kg next session.'},
+
+  13: { title:'Lower Body — Squat + Power', tags:['gym','jaw'],
+        exercises:[
+          {id:'sq13',     name:'Barbell Back Squat',        sets:'5×5 @80–85% 1RM', unit:'kg'},
+          {id:'hs13',     name:'Hack Squat or Leg Press',   sets:'4×10',            unit:'kg'},
+          {id:'bj13',     name:'Box Jump — max height',     sets:'5×5',             unit:'cm', noWeight:true},
+          {id:'lk13',     name:'Reverse Lunge to Knee Drive', sets:'3×12 each',     unit:'kg'},
+          {id:'lc13',     name:'Leg Curl — machine',        sets:'4×12',            unit:'kg'},
+          {id:'ca13',     name:'Calf Raise — standing',     sets:'4×20',            unit:'kg'},
+          {id:'dr13',     name:'Dragon Flag or Hanging Leg Raise', sets:'3×10',     unit:'reps', noWeight:true},
+        ],
+        note:'Box jump height matters now — find a box that challenges you. Land with full hip extension at the top.'},
+
+  14: { title:'Pull — Strength + Paddle Endurance', tags:['gym','jaw'],
+        exercises:[
+          {id:'pu14',     name:'Weighted Pull-Up',          sets:'5×5',             unit:'kg'},
+          {id:'pr14',     name:'Pendlay Row',               sets:'4×8 — explosive concentric', unit:'kg'},
+          {id:'sa14',     name:'Single-Arm DB Row — heavy', sets:'4×10 each',       unit:'kg'},
+          {id:'lp14',     name:'Lat Pulldown — close grip', sets:'3×12',            unit:'kg'},
+          {id:'yt14',     name:'Prone Y-T-W',               sets:'3×12 each',       unit:'kg'},
+          {id:'cu14',     name:'Barbell Curl',              sets:'3×10',            unit:'kg'},
+          {id:'db14',     name:'Dead Bug — slow',           sets:'3×10 each',       unit:'reps', noWeight:true},
+        ],
+        note:'Pendlay rows train explosive back power — bar starts floor each rep. Directly builds paddle strength.'},
+
+  15: { title:'Active Recovery + Surf Skills', tags:['rest','surf','jaw'],
+        exercises:[
+          {id:'ab15',     name:'Assault Bike',              sets:'25 min moderate',  unit:'min', noWeight:true},
+          {id:'pp15',     name:'Pop-Up Drill — focus on speed and landing', sets:'5×10', unit:'reps', noWeight:true},
+          {id:'cs15',     name:'Couch Stretch',             sets:'2 min each side',  unit:'sec', noWeight:true},
+          {id:'h915',     name:'Hip 90/90',                 sets:'90 sec each',       unit:'sec', noWeight:true},
+          {id:'te15',     name:'Thoracic Extension over foam roller', sets:'3 min', unit:'min', noWeight:true},
+          {id:'bo15',     name:'Single-Leg Bosu Balance',   sets:'3×40 sec each',    unit:'sec', noWeight:true},
+        ],
+        note:'Balance on the Bosu is your surf balance training. Eyes forward, soft knees — same as the board.'},
+
+  16: { title:'Full Body — Compound Supersets', tags:['gym','jaw'],
+        exercises:[
+          {id:'ss16a',    name:'Deadlift + Pull-Up superset', sets:'4×(6 DL + 6 PU)', unit:'kg'},
+          {id:'ss16b',    name:'Bench Press + Barbell Row superset', sets:'4×(8+8)', unit:'kg'},
+          {id:'ss16c',    name:'DB Lunge + DB Press superset', sets:'3×(10+10 each)', unit:'kg'},
+          {id:'kb16',     name:'Kettlebell Swing',           sets:'4×20',            unit:'kg'},
+          {id:'pa16',     name:'Pallof Press',               sets:'3×12 each',       unit:'kg'},
+          {id:'aw16',     name:'Ab Wheel Rollout',           sets:'3×12',            unit:'reps', noWeight:true},
+        ],
+        note:'Supersets elevate heart rate and boost fat burn. Rest 90 sec between pairs.'},
+
+  17: { title:'Surf + Sprint Conditioning', tags:['surf','gym','jaw'],
+        exercises:[
+          {id:'sp17',     name:'Treadmill Sprint Intervals — 30 sec on/30 off', sets:'12 rounds', unit:'km/h', noWeight:true},
+          {id:'ps17',     name:'Paddle Simulation — DB row incline bench', sets:'5×60 sec', unit:'kg'},
+          {id:'pu17',     name:'Pop-Up Drill — explosive',   sets:'5×10',            unit:'reps', noWeight:true},
+          {id:'bc17',     name:'Bear Crawl',                 sets:'5×20m',           unit:'m', noWeight:true},
+          {id:'sl17',     name:'Single-Leg RDL — KB',        sets:'3×10 each',       unit:'kg'},
+          {id:'wp17',     name:'Plank — weighted plate on back', sets:'3×45 sec',    unit:'kg'},
+        ],
+        note:'Sprint intervals are the fastest fat-loss tool in this program. 12 rounds = 12 min. Go hard.'},
+
+  18: { title:'Rest Day', tags:['rest','jaw'],
+        exercises:[
+          {id:'w18',      name:'40 min walk or easy bike',  sets:'',                unit:'min', noWeight:true},
+          {id:'s18',      name:'Stretch — full body',       sets:'15 min',          unit:'min', noWeight:true},
+        ],
+        note:'Two-thirds through Phase 2. Body composition should be visibly changing. Trust the process.'},
+
+  19: { title:'Upper Push + Hypertrophy', tags:['gym','jaw'],
+        exercises:[
+          {id:'db19',     name:'DB Bench Press — heavy',    sets:'4×10',            unit:'kg'},
+          {id:'cf19',     name:'Cable Chest Fly',           sets:'4×12',            unit:'kg'},
+          {id:'op19',     name:'Overhead Press — DB seated', sets:'4×10',           unit:'kg'},
+          {id:'ar19',     name:'Arnold Press',              sets:'3×12',            unit:'kg'},
+          {id:'fp19',     name:'Face Pull',                 sets:'4×15',            unit:'kg'},
+          {id:'te19',     name:'Tricep Overhead Extension — cable', sets:'3×12',   unit:'kg'},
+          {id:'sp19',     name:'Side Plank + Hip Dip',      sets:'3×12 each',       unit:'reps', noWeight:true},
+        ],
+        note:'Hypertrophy focus — 60 sec rest max. Pump is the goal today.'},
+
+  20: { title:'Lower Body — Posterior Chain + Power', tags:['gym','jaw'],
+        exercises:[
+          {id:'dl20',     name:'Deadlift',                  sets:'4×6 @85% 1RM',    unit:'kg'},
+          {id:'ht20',     name:'Hip Thrust — barbell, heavy', sets:'4×10',          unit:'kg'},
+          {id:'no20',     name:'Nordic Hamstring Curl',     sets:'3×8',             unit:'reps', noWeight:true},
+          {id:'su20',     name:'Step-Up — high box, KB',    sets:'3×12 each',       unit:'kg'},
+          {id:'bj20',     name:'Box Jump — broad jump variation', sets:'4×6',       unit:'reps', noWeight:true},
+          {id:'cr20',     name:'Seated Calf Raise',         sets:'4×20',            unit:'kg'},
+          {id:'df20',     name:'Dragon Flag',               sets:'3×8',             unit:'reps', noWeight:true},
+        ],
+        note:'Broad jumps mimic explosive forward movement — more surf-relevant than vertical jumps.'},
+
+  21: { title:'Pull — Heavy + Surf Endurance', tags:['gym','jaw'],
+        exercises:[
+          {id:'pu21',     name:'Weighted Pull-Up — heavy',  sets:'4×6–8',           unit:'kg'},
+          {id:'tb21',     name:'T-Bar Row',                 sets:'4×10',            unit:'kg'},
+          {id:'fp21',     name:'Rope Face Pull',            sets:'4×15',            unit:'kg'},
+          {id:'ir21',     name:'Incline DB Row — chest supported', sets:'3×12',     unit:'kg'},
+          {id:'lp21',     name:'Lat Pulldown — single arm', sets:'3×12 each',       unit:'kg'},
+          {id:'yt21',     name:'Prone Y-T-W',               sets:'3×12 each',       unit:'kg'},
+          {id:'wc21',     name:'Cable Woodchop',            sets:'3×12 each',        unit:'kg'},
+        ],
+        note:'Chest-supported row removes lower back from equation — pure lat and rhomboid. Great for paddle strength.'},
+
+  22: { title:'Phase 2 Benchmark + Photo', tags:['gym','surf','jaw'],
+        exercises:[
+          {id:'r22',      name:'Row Erg 2000m — beat Phase 1 time', sets:'',        unit:'min', noWeight:true},
+          {id:'d22',      name:'Deadlift — match or beat 5RM',  sets:'',            unit:'kg'},
+          {id:'p22',      name:'Pull-Up max reps',              sets:'',            unit:'reps', noWeight:true},
+          {id:'pp22',     name:'Pop-Up Drill — 60 total reps',  sets:'',            unit:'reps', noWeight:true},
+          {id:'ph22',     name:'Progress photo — same light and angle', sets:'',    unit:'', noWeight:true},
+        ],
+        note:'Phase 2 done. 11 days to Bali. You should be significantly leaner and stronger than Day 1.'},
+
+  // ── PHASE 3 ──
+  23: { title:'Power Upper Body', tags:['gym','jaw'],
+        exercises:[
+          {id:'b23',      name:'Barbell Bench Press — heavy', sets:'5×3 @87–90% 1RM', unit:'kg'},
+          {id:'pu23',     name:'Weighted Pull-Up',           sets:'5×5 — heavy',     unit:'kg'},
+          {id:'cr23',     name:'Cable Row — explosive concentric', sets:'4×8',       unit:'kg'},
+          {id:'fp23',     name:'Face Pull',                  sets:'4×15',            unit:'kg'},
+          {id:'er23',     name:'Band External Rotation',     sets:'3×20 each',       unit:'reps', noWeight:true},
+          {id:'wd23',     name:'Weighted Dip',               sets:'3×10',            unit:'kg'},
+          {id:'hb23',     name:'Hollow Body Hold',           sets:'3×40 sec',        unit:'sec', noWeight:true},
+        ],
+        note:'Phase 3 is about expressing the strength you\'ve built. Heavier, lower reps, full recovery between sets.'},
+
+  24: { title:'Lower Body Power + Plyos', tags:['gym','jaw'],
+        exercises:[
+          {id:'sq24',     name:'Barbell Back Squat — heavy', sets:'5×3 @87–90% 1RM', unit:'kg'},
+          {id:'td24',     name:'Trap Bar Deadlift — explosive', sets:'4×5',          unit:'kg'},
+          {id:'bj24',     name:'Box Jump — max height',      sets:'5×5',             unit:'cm', noWeight:true},
+          {id:'bs24',     name:'Bulgarian Split Squat — weighted', sets:'4×8 each',  unit:'kg'},
+          {id:'lc24',     name:'Leg Curl — machine',         sets:'3×12',            unit:'kg'},
+          {id:'lr24',     name:'Hanging Leg Raise',          sets:'4×15',            unit:'reps', noWeight:true},
+          {id:'aw24',     name:'Ab Wheel',                   sets:'3×12',            unit:'reps', noWeight:true},
+        ],
+        note:'Heaviest squat session of the program. Warm up thoroughly — at least 3 progressive warm-up sets before working weight.'},
+
+  25: { title:'Surf Conditioning — Peak Session', tags:['surf','gym','jaw'],
+        exercises:[
+          {id:'ri25',     name:'Row Erg intervals — 6×500m, 90 sec rest', sets:'',  unit:'sec', noWeight:true},
+          {id:'pp25',     name:'Pop-Up Drill — max speed',   sets:'6×10',            unit:'reps', noWeight:true},
+          {id:'ps25',     name:'Paddle Simulation',          sets:'5×60 sec',        unit:'kg'},
+          {id:'bc25',     name:'Bear Crawl',                 sets:'5×25m',           unit:'m', noWeight:true},
+          {id:'sl25',     name:'Single-Leg Squat — pistol/assisted', sets:'4×8 each', unit:'reps', noWeight:true},
+          {id:'bo25',     name:'Bosu Balance + perturbation', sets:'3×45 sec each',  unit:'sec', noWeight:true},
+          {id:'wp25',     name:'Plank — weighted',           sets:'3×60 sec',        unit:'kg'},
+        ],
+        note:'Peak surf conditioning session. Everything that makes you a better surfer — in one session.'},
+
+  26: { title:'Active Recovery — Pre-Final Push', tags:['rest','jaw'],
+        exercises:[
+          {id:'sw26',     name:'20 min easy swim or walk',   sets:'',                unit:'min', noWeight:true},
+          {id:'mo26',     name:'Full mobility flow — hips, thoracic, shoulders', sets:'20 min', unit:'min', noWeight:true},
+          {id:'fr26',     name:'Foam roller — lats, quads, calves', sets:'10 min',   unit:'min', noWeight:true},
+          {id:'bw26',     name:'Breathwork / stretch',       sets:'10 min',          unit:'min', noWeight:true},
+        ],
+        note:'7 days out. Recovery quality now directly impacts how you feel in Bali.'},
+
+  27: { title:'Full Body — Peak Strength', tags:['gym','jaw'],
+        exercises:[
+          {id:'dl27',     name:'Deadlift — heaviest of the program', sets:'5×3',    unit:'kg'},
+          {id:'bp27',     name:'Bench Press',                sets:'4×5',             unit:'kg'},
+          {id:'pu27',     name:'Weighted Pull-Up',           sets:'4×6',             unit:'kg'},
+          {id:'kb27',     name:'Kettlebell Swing — heavy',   sets:'5×15',            unit:'kg'},
+          {id:'pa27',     name:'Pallof Press',               sets:'3×12 each',       unit:'kg'},
+          {id:'lr27',     name:'Hanging Leg Raise',          sets:'3×15',            unit:'reps', noWeight:true},
+        ],
+        note:'Your strongest session. Leave it all on the floor. After this, the taper begins.'},
+
+  28: { title:'Surf Skills — Final High Volume', tags:['surf','jaw'],
+        exercises:[
+          {id:'pp28',     name:'Pop-Up Drill — 80 total reps at pace', sets:'',     unit:'reps', noWeight:true},
+          {id:'ps28',     name:'Paddle Simulation',          sets:'5×90 sec max effort', unit:'kg'},
+          {id:'bj28',     name:'Box Jump',                   sets:'4×8',             unit:'cm', noWeight:true},
+          {id:'bl28',     name:'Single-Leg Balance — eyes closed', sets:'3×30 sec each', unit:'sec', noWeight:true},
+          {id:'bc28',     name:'Bear Crawl',                 sets:'4×25m',           unit:'m', noWeight:true},
+          {id:'co28',     name:'Core circuit: ab wheel + dragon flag + hollow body', sets:'3 rounds', unit:'reps', noWeight:true},
+        ],
+        note:'80 pop-ups. When you paddle into your first Bali wave and pop up without thinking — this is why.'},
+
+  29: { title:'Taper — Upper Body Maintenance', tags:['gym','jaw'],
+        exercises:[
+          {id:'bp29',     name:'Bench Press',                sets:'3×5 — moderate, crisp', unit:'kg'},
+          {id:'pu29',     name:'Pull-Up',                    sets:'3×8',             unit:'kg'},
+          {id:'fp29',     name:'Face Pull',                  sets:'3×15',            unit:'kg'},
+          {id:'er29',     name:'Band External Rotation',     sets:'3×20 each',       unit:'reps', noWeight:true},
+          {id:'sp29',     name:'DB Shoulder Press',          sets:'3×10',            unit:'kg'},
+          {id:'pl29',     name:'Plank',                      sets:'3×45 sec',        unit:'sec', noWeight:true},
+          {id:'ca29',     name:'15 min easy cardio',         sets:'',                unit:'min', noWeight:true},
+        ],
+        note:'Taper starts. Volume drops, intensity stays. You\'re protecting what\'s there — not building more.'},
+
+  30: { title:'Taper — Lower Body Maintenance', tags:['gym','jaw'],
+        exercises:[
+          {id:'sq30',     name:'Squat — moderate, fast and clean', sets:'3×5',      unit:'kg'},
+          {id:'rd30',     name:'Romanian Deadlift',          sets:'3×8',             unit:'kg'},
+          {id:'ht30',     name:'Hip Thrust',                 sets:'3×10',            unit:'kg'},
+          {id:'cr30',     name:'Calf Raise',                 sets:'3×20',            unit:'kg'},
+          {id:'st30',     name:'Hip flexor + hamstring stretch', sets:'2 min each',  unit:'sec', noWeight:true},
+          {id:'ca30',     name:'20 min easy walk or bike',   sets:'',                unit:'min', noWeight:true},
+        ],
+        note:'Keep it light and sharp. You should feel fresh after this — not beaten up.'},
+
+  31: { title:'Surf Prep — Easy Skill Session', tags:['surf','jaw'],
+        exercises:[
+          {id:'pp31',     name:'Pop-Up Drill — smooth not fast', sets:'3×10',       unit:'reps', noWeight:true},
+          {id:'sm31',     name:'Shoulder Mobility Circuit',  sets:'10 min',          unit:'min', noWeight:true},
+          {id:'bl31',     name:'Single-Leg Balance',         sets:'3×30 sec each',   unit:'sec', noWeight:true},
+          {id:'yt31',     name:'Prone Y-T-W',               sets:'2×12 each',       unit:'kg'},
+          {id:'wk31',     name:'20 min easy walk',           sets:'',                unit:'min', noWeight:true},
+        ],
+        note:'2 days out from Bali. Loose, mobile, confident. This is a movement day — not a training day.'},
+
+  32: { title:'Rest — Final Prep', tags:['rest','jaw'],
+        exercises:[
+          {id:'wk32',     name:'30 min gentle walk',         sets:'',                unit:'min', noWeight:true},
+          {id:'st32',     name:'Full body stretch + breathwork', sets:'15 min',      unit:'min', noWeight:true},
+          {id:'sl32',     name:'Sleep 8+ hours',             sets:'',                unit:'hrs', noWeight:true},
+        ],
+        note:'Trust 32 days of work. Your body is primed. Rest is the final adaptation.'},
+
+  33: { title:'Departure Day', tags:['rest','jaw'],
+        exercises:[
+          {id:'mo33',     name:'10 min morning mobility',    sets:'',                unit:'min', noWeight:true},
+          {id:'tc33',     name:'Chin tucks on the plane — every hour', sets:'',     unit:'reps', noWeight:true},
+          {id:'wa33',     name:'Walk the aisle every 90 min', sets:'',              unit:'min', noWeight:true},
+          {id:'hy33',     name:'Stay hydrated — 3L on the flight', sets:'',         unit:'L', noWeight:true},
+        ],
+        note:'You\'ve done the work. Go surf.'},
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────────────────────────────────────
+function loadState() {
+  try { return JSON.parse(localStorage.getItem('bali_state') || '{}'); } catch(e) { return {}; }
+}
+function saveState(s) {
+  try { localStorage.setItem('bali_state', JSON.stringify(s)); } catch(e) {}
+}
+let state = loadState();
+// state structure: { checked: {dayExKey: bool}, weights: {dayExKey: string}, dayDone: {day: bool} }
+if (!state.checked) state.checked = {};
+if (!state.weights) state.weights = {};
+if (!state.dayDone) state.dayDone = {};
+if (!state.comments) state.comments = {};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PROJECTION ENGINE
+// ─────────────────────────────────────────────────────────────────────────────
+function getProjection(exId, currentWeight, unit, day) {
+  if (!currentWeight || isNaN(parseFloat(currentWeight))) return '';
+  const val = parseFloat(currentWeight);
+  if (val <= 0) return '';
+
+  // For kg-based exercises: suggest +2.5 kg next week
+  // For time-based: suggest +5 sec or +10%
+  // For reps: note progression
+  if (unit === 'kg') {
+    const proj = val + 2.5;
+    return `Next week → ${proj} kg`;
+  } else if (unit === 'sec') {
+    const proj = Math.round(val * 1.1);
+    return `Next week → ${proj} sec`;
+  } else if (unit === 'min') {
+    const proj = (val * 1.05).toFixed(1);
+    return `Next week → ${proj} min`;
+  } else if (unit === 'reps') {
+    const proj = val + 2;
+    return `Next week → ${proj} reps`;
+  } else if (unit === 'km/h') {
+    const proj = (val + 0.5).toFixed(1);
+    return `Next week → ${proj} km/h`;
+  } else if (unit === 'cm') {
+    return `Target → beat this`;
+  }
+  return '';
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MEAL DATA
+// ─────────────────────────────────────────────────────────────────────────────
+function getMeals(day) {
+  const isHard = ![4,7,15,18,26,32,33].includes(day); // rest/recovery days
+  return [
+    {
+      id:'meal_bfast', label:'Breakfast',
+      name:'Overnight Oats + Yogurt',
+      detail:'½ cup oats soaked overnight · 150g Greek yogurt · honey drizzle',
+      cal:'~550 cal / 30g protein'
+    },
+    {
+      id:'meal_snack1', label:'Morning Snack',
+      name: isHard ? 'Banana + Apple' : 'Apple or Orange',
+      detail: isHard ? 'Banana for carbs on training days' : '1 piece of fruit',
+      cal: isHard ? '~180 cal' : '~100 cal'
+    },
+    {
+      id:'meal_lunch', label:'Lunch',
+      name:'Eggs + Carbs',
+      detail:`${isHard ? '4' : '3'} eggs · ${isHard ? '¾ cup rice or 2 slices wholegrain toast' : '1 slice toast or ½ cup rice'}`,
+      cal: isHard ? '~560 cal / 32g protein' : '~480 cal / 26g protein'
+    },
+    {
+      id:'meal_snack2', label:'Afternoon Snack',
+      name: isHard ? '150g Greek Yogurt' : 'Skip if not hungry',
+      detail: isHard ? 'Plain, full or low fat' : 'Rest day — trust appetite',
+      cal: isHard ? '~150 cal / 15g protein' : '0–150 cal'
+    },
+    {
+      id:'meal_dinner', label:'Dinner',
+      name:'Protein + White Potato + Veg',
+      detail:`150–200g chicken/salmon/mince · ${isHard ? '250g' : '200g'} white potato · 1–2 cups veg`,
+      cal: isHard ? '~680 cal / 50g protein' : '~580 cal / 45g protein'
+    },
+    {
+      id:'meal_water', label:'Hydration',
+      name:'3L Water',
+      detail:'Track through the day — don\'t leave it till night',
+      cal:'0 cal'
+    },
+  ];
+}
+
+function buildMealRow(day, meal) {
+  const key = `d${day}_${meal.id}`;
+  const isChecked = !!state.checked[key];
+
+  const row = document.createElement('div');
+  row.className = 'meal-row' + (isChecked ? ' checked' : '');
+  row.id = `mrow-${key}`;
+
+  row.innerHTML = `
+    <button class="meal-check" onclick="toggleMeal('${key}','${day}')">✓</button>
+    <div style="flex:1;min-width:0">
+      <div style="display:flex;align-items:baseline;gap:8px">
+        <span style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#b05a2a;flex-shrink:0">${meal.label}</span>
+        <span class="meal-name">${meal.name}</span>
+      </div>
+      <div class="meal-detail">${meal.detail}</div>
+    </div>
+    <div class="meal-cal">${meal.cal}</div>`;
+  return row;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RENDER
+// ─────────────────────────────────────────────────────────────────────────────
+const PHASES = [
+  { name:'Activation', days:[1,2,3,4,5,6,7,8,9,10,11], desc:'Foundation of strength, posture, surf conditioning. Benchmark tests on Day 11.' },
+  { name:'Build',      days:[12,13,14,15,16,17,18,19,20,21,22], desc:'5×5 strength, progressive overload, sprint conditioning. Benchmark on Day 22.' },
+  { name:'Peak',       days:[23,24,25,26,27,28,29,30,31,32,33], desc:'Power expression, surf conditioning peak, then taper into Bali.' },
+  { name:'Guide',      days:[], desc:'' },
+  { name:'Stats',      days:[], desc:'' },
+];
+
+function phaseColor(phase) {
+  const map = { Activation:'var(--ocean-lt)', Build:'var(--green-lt)', Peak:'var(--gold)', Guide:'var(--muted)', Stats:'var(--muted)' };
+  return map[phase] || 'var(--ocean-lt)';
+}
+
+function buildTabs() {
+  const tabs = document.getElementById('tabs');
+  tabs.innerHTML = '';
+  PHASES.forEach((ph, i) => {
+    const div = document.createElement('div');
+    div.className = 'tab' + (i===0?' active':'');
+    div.dataset.idx = i;
+    let checkmark = '';
+    if (ph.days.length) {
+      const done = ph.days.filter(d => state.dayDone[d]).length;
+      if (done > 0) checkmark = `<span class="tab-check">${done}/${ph.days.length}</span>`;
+    }
+    div.innerHTML = ph.name + checkmark;
+    div.onclick = () => showPhase(i);
+    tabs.appendChild(div);
+  });
+}
+
+function showPhase(idx) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', i===idx));
+  document.querySelectorAll('.phase-section').forEach((s,i) => s.classList.toggle('visible', i===idx));
+}
+
+function exKey(day, exId) { return `d${day}_${exId}`; }
+
+function buildExRow(day, ex, isJaw) {
+  const key = exKey(day, ex.id);
+  const isChecked = !!state.checked[key];
+  const weight = state.weights[key] || '';
+
+  const row = document.createElement('div');
+  row.className = 'ex-row' + (isChecked ? ' checked' : '') + (isJaw ? ' jaw-ex' : '');
+  row.id = `row-${key}`;
+
+  const placeholder = ex.noWeight ? (ex.unit || '—') : `${ex.unit || 'kg'}`;
+  const proj = getProjection(ex.id, weight, ex.unit, day);
+
+  row.innerHTML = `
+    <button class="ex-check" onclick="toggleCheck('${key}','${day}')" title="Mark complete">✓</button>
+    <div class="ex-main">
+      <div class="ex-name">${ex.name}</div>
+      ${ex.sets ? `<div class="ex-sets">${ex.sets}</div>` : ''}
+    </div>
+    <div class="ex-inputs">
+      <input class="weight-input" type="number" step="0.5" min="0"
+        placeholder="${placeholder}"
+        value="${weight}"
+        oninput="saveWeight('${key}','${day}',this.value,'${ex.unit||''}')"
+        title="${ex.noWeight ? ex.unit || 'log value' : 'Weight in ' + (ex.unit||'kg')}"/>
+      <div class="proj-text" id="proj-${key}">${proj}</div>
+    </div>`;
+  return row;
+}
+
+function buildDayCard(day) {
+  const d = gymDays[day];
+  const jaw = jawExercises(day);
+  const isDone = !!state.dayDone[day];
+
+  const card = document.createElement('div');
+  card.className = 'day-card' + (isDone ? ' done' : '');
+  card.id = `card-day-${day}`;
+
+  const tagHTML = d.tags.map(t => `<span class="tag tag-${t}">${t}</span>`).join('');
+
+  card.innerHTML = `
+    <div class="day-header" onclick="toggleDay(${day})">
+      <div class="day-num">${String(day).padStart(2,'0')}</div>
+      <div class="day-info">
+        <div class="day-title">${d.title}</div>
+        <div class="day-tags">${tagHTML}</div>
+      </div>
+      <div class="day-chevron">▼</div>
+    </div>
+    <div class="day-body" id="body-${day}"></div>`;
+
+  // Build body
+  const body = card.querySelector('.day-body');
+
+  // Gym section
+  const gymSec = document.createElement('div');
+  gymSec.className = 'session-section';
+  const gymLabel = document.createElement('div');
+  gymLabel.className = 'section-label';
+  gymLabel.style.color = 'var(--ocean-lt)';
+  gymLabel.textContent = 'Workout';
+  gymSec.appendChild(gymLabel);
+  d.exercises.forEach(ex => gymSec.appendChild(buildExRow(day, ex, false)));
+
+  const note = document.createElement('div');
+  note.className = 'coach-note';
+  note.innerHTML = `<strong>Coach</strong><br>${d.note}`;
+  gymSec.appendChild(note);
+  body.appendChild(gymSec);
+
+  // Jaw section
+  const jawSec = document.createElement('div');
+  jawSec.className = 'session-section';
+  const jawLabel = document.createElement('div');
+  jawLabel.className = 'section-label';
+  jawLabel.style.color = 'var(--jaw-lt)';
+  jawLabel.textContent = 'Jaw Program';
+  jawSec.appendChild(jawLabel);
+  jaw.forEach(ex => jawSec.appendChild(buildExRow(day, ex, true)));
+
+  const jawNote = document.createElement('div');
+  jawNote.className = 'coach-note';
+  jawNote.style.borderLeftColor = 'var(--jaw)';
+  const ph = day <= 11 ? 'Phase 1' : day <= 22 ? 'Phase 2' : 'Phase 3';
+  jawNote.innerHTML = `<strong style="color:var(--jaw-lt)">Jaw — ${ph}</strong><br>Mewing all day. Tongue flat to roof of mouth, 24/7. The jaw exercises take under 10 min — do them at home or at the gym.`;
+  jawSec.appendChild(jawNote);
+  body.appendChild(jawSec);
+
+  // Meal section
+  const mealSec = document.createElement('div');
+  mealSec.className = 'session-section';
+  const mealLabel = document.createElement('div');
+  mealLabel.className = 'section-label';
+  mealLabel.style.color = '#d4784a';
+  mealLabel.textContent = 'Nutrition';
+  mealSec.appendChild(mealLabel);
+  getMeals(day).forEach(meal => mealSec.appendChild(buildMealRow(day, meal)));
+  body.appendChild(mealSec);
+
+  // Comments section
+  const commentWrap = document.createElement('div');
+  commentWrap.className = 'comments-wrap';
+  const commentLabel = document.createElement('div');
+  commentLabel.className = 'comments-label';
+  commentLabel.textContent = 'Notes & Comments';
+  const savedComment = state.comments ? (state.comments[day] || '') : '';
+  const textarea = document.createElement('textarea');
+  textarea.className = 'comments-textarea';
+  textarea.placeholder = 'How did it go? Weights hit, how you felt, anything to note for next session...';
+  textarea.value = savedComment;
+  textarea.oninput = () => saveComment(day, textarea.value);
+  commentWrap.appendChild(commentLabel);
+  commentWrap.appendChild(textarea);
+  body.appendChild(commentWrap);
+
+  // Complete button
+  const btn = document.createElement('button');
+  btn.className = 'day-complete-btn';
+  btn.id = `complete-btn-${day}`;
+  btn.textContent = isDone ? '✓ Day Complete' : 'Mark Day Complete';
+  btn.onclick = () => toggleDayDone(day);
+  body.appendChild(btn);
+
+  return card;
+}
+
+function buildPhases() {
+  const main = document.getElementById('main-content');
+  main.innerHTML = '';
+
+  PHASES.forEach((ph, phIdx) => {
+    const sec = document.createElement('div');
+    sec.className = 'phase-section' + (phIdx===0?' visible':'');
+    sec.id = `phase-sec-${phIdx}`;
+
+    if (ph.days.length) {
+      const hdr = document.createElement('div');
+      hdr.className = 'phase-header';
+      hdr.innerHTML = `<div class="phase-name" style="color:${phaseColor(ph.name)}">${ph.name.toUpperCase()}</div>
+        <div class="phase-meta">${ph.desc}</div>`;
+      sec.appendChild(hdr);
+      ph.days.forEach(day => sec.appendChild(buildDayCard(day)));
+    } else if (ph.name === 'Guide') {
+      sec.innerHTML = buildGuide();
+    } else if (ph.name === 'Stats') {
+      sec.innerHTML = buildStats();
+    }
+    main.appendChild(sec);
+  });
+}
+
+function buildGuide() {
+  return `<div class="guide-section">
+    <div class="phase-header">
+      <div class="phase-name" style="color:var(--muted)">THE GUIDE</div>
+      <div class="phase-meta">Everything you need to know beyond the sessions.</div>
+    </div>
+    <div class="guide-card">
+      <div class="guide-card-title">Progressive Overload Rules</div>
+      <p>For all barbell lifts: if you hit every rep with good form, add 2.5 kg next session. If you miss reps, hold the weight. Track your weights using the input fields on each exercise — the app will calculate your projected next-week target automatically.</p>
+      <p>Rest periods: Strength (3–5 reps) → 2.5–3 min. Hypertrophy (8–12 reps) → 60–90 sec. Conditioning → as prescribed.</p>
+    </div>
+    <div class="guide-card">
+      <div class="guide-card-title">Surf Conditioning Keys</div>
+      <p><strong style="color:var(--ocean-lt)">Pop-Up Drill:</strong> Lie face down, hands beside chest, push to standing in one smooth movement. Land athletic — soft knees, weight centred, eyes forward. Practice until it's unconscious.</p>
+      <p><strong style="color:var(--ocean-lt)">Paddle Simulation:</strong> Incline bench, chest down, alternate DB row for time. Mimics paddling endurance.</p>
+      <p><strong style="color:var(--ocean-lt)">Row Erg 2000m:</strong> Record your Day 9/11 time. Beat it on Day 22 and Day 25. This is your single best conditioning benchmark.</p>
+      <p><strong style="color:var(--ocean-lt)">Face Pull + External Rotation:</strong> Every push day. Protects the rotator cuff for paddling. Non-negotiable.</p>
+    </div>
+    <div class="guide-card">
+      <div class="guide-card-title">Jaw Program</div>
+      <p><strong style="color:var(--jaw-lt)">Mewing:</strong> Full tongue flat to roof of mouth, 24/7. This is passive training — it's happening all day whether you think about it or not. Set phone reminders until it becomes automatic.</p>
+      <p><strong style="color:var(--jaw-lt)">Jaw Clench Hold:</strong> Bite firmly, feel the masseter (the muscle on the side of your jaw). Isometric hold — don't grind. The hold time increases across phases.</p>
+      <p><strong style="color:var(--jaw-lt)">Tongue Press:</strong> Full tongue pressed hard to roof of mouth, hold. Trains the suprahyoid muscles under the chin which define the jaw-neck boundary.</p>
+      <p><strong style="color:var(--jaw-lt)">Mastic Gum:</strong> Available online. Significantly harder than regular gum — it's actual resistance training. Switch sides every 5 min.</p>
+    </div>
+    <div class="guide-card">
+      <div class="guide-card-title">Nutrition in Brief</div>
+      <p>Target: ~2,000 cal/day, 150–170g protein. Overnight oats + yogurt for breakfast. 3–4 eggs + carb for lunch. Protein + white potato + veg for dinner. Fruit snacks. Batch cook protein Sunday and Wednesday.</p>
+      <p>Alcohol stalls fat loss 2–3 days per session. Water: 3L daily. On hard training days add extra carbs. On rest days drop the afternoon snack.</p>
+    </div>
+    <div class="guide-card">
+      <div class="guide-card-title">The Taper (Days 29–33)</div>
+      <p>Volume drops significantly in the final week. You're not building anything new — you're letting adaptation consolidate so you arrive in Bali fresh, not wrecked. Keep the intensity sharp but cut volume by ~40%. Sleep becomes the priority training variable.</p>
+    </div>
+  </div>`;
+}
+
+function buildStats() {
+  const total = Object.keys(gymDays).length;
+  const done = Object.values(state.dayDone).filter(Boolean).length;
+  const exChecked = Object.values(state.checked).filter(Boolean).length;
+  const heaviestDL = Object.entries(state.weights)
+    .filter(([k]) => k.includes('dl') || k.includes('dead') || k.includes('bm_dl'))
+    .map(([,v]) => parseFloat(v)||0).reduce((a,b) => Math.max(a,b), 0);
+  const heaviestBench = Object.entries(state.weights)
+    .filter(([k]) => k.includes('bench') || k.includes('bp') || k.match(/b\d{2}/))
+    .map(([,v]) => parseFloat(v)||0).reduce((a,b) => Math.max(a,b), 0);
+
+  return `<div class="guide-section">
+    <div class="phase-header">
+      <div class="phase-name" style="color:var(--muted)">YOUR STATS</div>
+      <div class="phase-meta">Progress at a glance.</div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-box"><div class="stat-val">${done}</div><div class="stat-lbl">Days Complete</div></div>
+      <div class="stat-box"><div class="stat-val">${total - done}</div><div class="stat-lbl">Days Remaining</div></div>
+      <div class="stat-box"><div class="stat-val">${exChecked}</div><div class="stat-lbl">Exercises Logged</div></div>
+      <div class="stat-box"><div class="stat-val">${Math.round((done/total)*100)}%</div><div class="stat-lbl">Program Complete</div></div>
+    </div>
+    ${heaviestDL > 0 ? `<div class="stat-box" style="margin-bottom:10px;text-align:center"><div class="stat-val">${heaviestDL} kg</div><div class="stat-lbl">Best Deadlift Logged</div></div>` : ''}
+    ${heaviestBench > 0 ? `<div class="stat-box" style="margin-bottom:10px;text-align:center"><div class="stat-val">${heaviestBench} kg</div><div class="stat-lbl">Best Bench Logged</div></div>` : ''}
+    <div class="guide-card">
+      <div class="guide-card-title">Weight Log Tips</div>
+      <p>Enter the weight used for each exercise in the input field next to it. The app automatically calculates your next-week projection (+2.5 kg for barbell lifts, +10% for time-based work).</p>
+      <p>All data is saved in your browser. Open this file in the same browser every session to keep your history.</p>
+    </div>
+  </div>`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// INTERACTIONS
+// ─────────────────────────────────────────────────────────────────────────────
+function toggleMeal(key, day) {
+  state.checked[key] = !state.checked[key];
+  saveState(state);
+  const row = document.getElementById(`mrow-${key}`);
+  if (row) row.classList.toggle('checked', state.checked[key]);
+}
+
+function saveComment(day, val) {
+  if (!state.comments) state.comments = {};
+  state.comments[day] = val;
+  saveState(state);
+}
+
+function toggleCheck(key, day) {
+  state.checked[key] = !state.checked[key];
+  saveState(state);
+  const row = document.getElementById(`row-${key}`);
+  if (row) row.classList.toggle('checked', state.checked[key]);
+  updateProgress();
+}
+
+function saveWeight(key, day, val, unit) {
+  state.weights[key] = val;
+  saveState(state);
+  const proj = getProjection(key, val, unit, day);
+  const projEl = document.getElementById(`proj-${key}`);
+  if (projEl) projEl.textContent = proj;
+}
+
+function toggleDay(day) {
+  const card = document.getElementById(`card-day-${day}`);
+  if (card) card.classList.toggle('open');
+}
+
+function toggleDayDone(day) {
+  state.dayDone[day] = !state.dayDone[day];
+  saveState(state);
+  const card = document.getElementById(`card-day-${day}`);
+  const btn = document.getElementById(`complete-btn-${day}`);
+  const num = card ? card.querySelector('.day-num') : null;
+  if (card) card.classList.toggle('done', state.dayDone[day]);
+  if (btn) btn.textContent = state.dayDone[day] ? '✓ Day Complete' : 'Mark Day Complete';
+  updateProgress();
+  buildTabs();
+}
+
+function updateProgress() {
+  const done = Object.values(state.dayDone).filter(Boolean).length;
+  document.getElementById('prog-val').textContent = `${done} / 33 Days`;
+  document.getElementById('prog-fill').style.width = `${(done/33)*100}%`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────────────────────────────────────
+buildPhases();
+buildTabs();
+updateProgress();
+</script>
+</body>
+</html>
