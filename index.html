@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stay Sharp — 30 Day Program</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{scroll-behavior:smooth;}
+body{background:#080808;color:#f0ede8;font-family:-apple-system,system-ui,sans-serif;font-size:14px;min-height:100vh;}
+button{font-family:inherit;cursor:pointer;border:none;}
+input,textarea{font-family:inherit;}
+textarea{-webkit-appearance:none;border-radius:0;}
+
+.hero{padding:36px 18px 24px;text-align:center;border-bottom:1px solid #2a2a2a;background:linear-gradient(180deg,#111 0%,#080808 100%);}
+.hero-badge{display:inline-block;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#c9a84c;border:1px solid rgba(201,168,76,0.35);padding:5px 13px;margin-bottom:14px;}
+.hero-title{font-size:clamp(44px,12vw,72px);line-height:0.9;letter-spacing:1px;margin-bottom:4px;font-weight:700;}
+.hero-title span{color:#2a8fb0;}
+.hero-sub{font-size:11px;color:#6a6460;margin-top:12px;line-height:1.6;}
+
+.progress-wrap{padding:14px 18px 0;max-width:860px;margin:0 auto;}
+.progress-row{display:flex;justify-content:space-between;margin-bottom:7px;}
+.progress-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#6a6460;}
+.progress-val{font-size:18px;color:#c9a84c;font-weight:700;}
+.progress-bar{height:3px;background:#2a2a2a;border-radius:2px;overflow:hidden;margin-bottom:14px;}
+.progress-fill{height:100%;background:linear-gradient(90deg,#1a6b8a,#c9a84c);transition:width .5s;}
+
+.tabs{display:flex;overflow-x:auto;border-bottom:1px solid #2a2a2a;background:#111;position:sticky;top:0;z-index:50;-webkit-overflow-scrolling:touch;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{flex:0 0 auto;padding:11px 14px;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#6a6460;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;transition:all .2s;}
+.tab.active{color:#2a8fb0;border-bottom-color:#2a8fb0;}
+.tab .cnt{margin-left:4px;font-size:9px;color:#c9a84c;}
+
+.main{max-width:860px;margin:0 auto;padding:18px;}
+.week-header{margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #2a2a2a;}
+.week-title{font-size:26px;color:#2a8fb0;letter-spacing:1px;font-weight:700;}
+.week-desc{font-size:11px;color:#6a6460;margin-top:4px;}
+
+/* DAY CARD */
+.day-card{background:#111;border:1px solid #2a2a2a;margin-bottom:8px;transition:border-color .2s;}
+.day-card.done{border-color:rgba(26,107,138,0.4);}
+.day-header{display:flex;align-items:center;gap:12px;padding:13px 14px;cursor:pointer;}
+.day-num{font-size:22px;color:#2a2a2a;font-weight:700;min-width:32px;line-height:1;transition:color .2s;}
+.day-card.done .day-num{color:#2a8fb0;}
+.day-dow{font-size:9px;color:#6a6460;letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+.day-title{font-size:13px;font-weight:500;margin-bottom:4px;}
+.day-week{font-size:9px;color:#6a6460;}
+.day-chevron{font-size:11px;color:#6a6460;transition:transform .2s;flex-shrink:0;margin-left:auto;}
+.day-card.open .day-chevron{transform:rotate(180deg);}
+.day-body{display:none;border-top:1px solid #2a2a2a;}
+.day-card.open .day-body{display:block;}
+
+/* SECTION */
+.section{padding:14px;border-bottom:1px solid #222;}
+.section:last-child{}
+.section-label{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.section-label span{font-size:9px;letter-spacing:2px;text-transform:uppercase;flex-shrink:0;}
+.section-label::after{content:'';flex:1;height:1px;background:#2a2a2a;}
+
+/* EX ROW */
+.ex-row{display:grid;grid-template-columns:22px 1fr auto;gap:10px;padding:8px 0;border-bottom:1px solid #222;align-items:start;}
+.ex-row:last-of-type{border-bottom:none;}
+.ex-check{width:20px;height:20px;border:1.5px solid #2a2a2a;border-radius:2px;background:none;color:transparent;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;transition:all .15s;cursor:pointer;}
+.ex-row.checked .ex-check{color:white;}
+.ex-row.checked .ex-name{text-decoration:line-through;color:#6a6460;}
+.ex-name{font-size:12px;font-weight:500;line-height:1.4;margin-bottom:2px;}
+.ex-sets{font-size:10px;color:#6a6460;font-style:italic;}
+.ex-forecast{font-size:9px;margin-top:3px;line-height:1.4;}
+.weight-input{width:72px;background:#181818;border:1px solid #2a2a2a;color:#f0ede8;font-size:11px;padding:4px 7px;outline:none;text-align:right;}
+.weight-input:focus{border-color:#1a6b8a;}
+
+/* MEAL ROW */
+.meal-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid #222;}
+.meal-check{width:20px;height:20px;border:1.5px solid #b05a2a;border-radius:2px;background:none;color:transparent;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;cursor:pointer;transition:all .15s;}
+.meal-row.checked .meal-check{background:#b05a2a;color:white;}
+.meal-row.checked .meal-name-text{text-decoration:line-through;color:#6a6460;}
+.meal-label{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#d4784a;flex-shrink:0;}
+.meal-name-text{font-size:12px;font-weight:500;}
+.meal-detail{font-size:10px;color:#6a6460;margin-top:2px;line-height:1.5;}
+.meal-cal{font-size:10px;color:#d4784a;flex-shrink:0;text-align:right;min-width:60px;}
+
+/* COACH NOTE */
+.coach-note{margin-top:10px;padding:9px 11px;border-left:2px solid #c9a84c;background:rgba(201,168,76,0.05);font-size:11px;color:#6a6460;line-height:1.6;font-style:italic;}
+.coach-note strong{color:#c9a84c;font-style:normal;font-size:9px;letter-spacing:1px;text-transform:uppercase;}
+
+/* COMMENTS */
+.comments-textarea{width:100%;min-height:70px;background:#181818;border:1px solid #2a2a2a;color:#f0ede8;font-size:12px;line-height:1.6;padding:9px 11px;outline:none;resize:vertical;}
+.comments-textarea:focus{border-color:#b05a2a;}
+
+/* COMPLETE BTN */
+.complete-btn{width:100%;padding:11px;background:transparent;border-top:1px solid #2a2a2a;color:#6a6460;font-size:10px;letter-spacing:2px;text-transform:uppercase;transition:all .2s;}
+.day-card.done .complete-btn{color:#2a8fb0;background:rgba(26,107,138,0.15);}
+
+/* GUIDE */
+.guide-card{background:#111;border:1px solid #2a2a2a;padding:16px;margin-bottom:10px;}
+.guide-title{font-size:17px;color:#2a8fb0;margin-bottom:8px;font-weight:700;}
+.guide-body{font-size:12px;color:#6a6460;line-height:1.8;white-space:pre-line;}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.stat-box{background:#111;border:1px solid #2a2a2a;padding:16px;text-align:center;}
+.stat-val{font-size:34px;color:#2a8fb0;line-height:1;font-weight:700;}
+.stat-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#6a6460;margin-top:6px;}
+
+footer{text-align:center;padding:24px 18px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#3a3630;border-top:1px solid #2a2a2a;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">30 Day Maintenance Program</div>
+  <div class="hero-title">STAY<span>SHARP</span></div>
+  <div class="hero-sub">Strength · Run · Conditioning · Back Health · Jaw · Nutrition</div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-row">
+    <span class="progress-label">Overall Progress</span>
+    <span class="progress-val" id="prog-val">0 / 30 Days</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+</div>
+
+<div class="tabs" id="tabs"></div>
+<div class="main" id="main"></div>
+<footer>Stay Sharp · 30 Days · Data saves in your browser</footer>
+
+<script>
+// ── DATA ─────────────────────────────────────────────────────────────────────
+const DAY_TYPES = {1:'run',2:'upper',3:'lower',4:'rest',5:'fullbody',6:'conditioning',7:'rest'};
+const DAY_NAMES = {run:'Monday — Run Day',upper:'Tuesday — Upper Body',lower:'Wednesday — Lower Body',rest:'Rest Day',fullbody:'Friday — Full Body',conditioning:'Saturday — Conditioning'};
+const DOWS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+
+function getDayType(d){ return DAY_TYPES[((d-1)%7)+1]; }
+function getWeek(d){ return Math.ceil(d/7); }
+function getDow(d){ return ((d-1)%7); }
+
+const TYPE_COLORS = {run:'#2aaa6a',upper:'#2a8fb0',lower:'#3d9a68',rest:'#6a6460',fullbody:'#e8c97a',conditioning:'#d4784a'};
+
+const ROMAN = [
+  {id:'rc_ext', name:'Roman Chair Back Extension', sets:'3×15 controlled', unit:'kg'},
+  {id:'rc_side',name:'Roman Chair Side Bend',      sets:'2×12 each side',  unit:'kg'},
+  {id:'rc_hold',name:'Roman Chair Isometric Hold', sets:'3×20 sec',        unit:''},
+];
+
+const BACK = [
+  {id:'bm_hang',  name:'Dead Hang — bar',                   sets:'3×30 sec',        unit:''},
+  {id:'bm_cc',    name:'Cat-Cow',                           sets:'10 reps slow',     unit:''},
+  {id:'bm_kneeX', name:'Right Knee Cross-Body Pull',        sets:'60 sec',           unit:''},
+  {id:'bm_sideR', name:'Side Bend Stretch — RIGHT side only',sets:'60 sec',          unit:''},
+  {id:'bm_ttn',   name:'Thread the Needle — LEFT arm bias', sets:'3×45 sec',         unit:''},
+  {id:'bm_foam',  name:'Foam Roller Thoracic — left bias',  sets:'2 min',            unit:''},
+  {id:'bm_breath',name:'Left Side Rib Breathing',           sets:'10 slow breaths',  unit:''},
+];
+
+function getJaw(week){
+  const p = week<=2?1:2;
+  return [
+    {id:'jaw_clench',name:'Jaw Clench Hold',                  sets:p===1?'4×20 sec':'5×25 sec',unit:''},
+    {id:'jaw_tongue',name:'Tongue Press (full tongue to roof)',sets:p===1?'3×12 sec':'4×15 sec',unit:''},
+    {id:'jaw_tuck',  name:'Chin Tuck',                        sets:p===1?'3×15':'4×15',         unit:''},
+    {id:'jaw_gum',   name:'Mastic/Hard Gum Chew',             sets:p===1?'15 min':'20 min',     unit:''},
+  ];
+}
+
+function getMeals(day){
+  const type = getDayType(day);
+  const hard = type!=='rest';
+  const isRun = type==='run';
+  return [
+    {id:'coffee', label:'Morning',   name:'Black Coffee',            detail:'1–2 cups before training or with breakfast', cal:'~5 cal'},
+    {id:'bfast',  label:'Breakfast', name:'Overnight Oats + Yogurt', detail:'½ cup oats · 150g Greek yogurt · honey drizzle', cal:'~550 cal / 30g protein'},
+    {id:'fruit1', label:'Snack',     name:isRun?'Banana + Orange':'Apple + Orange', detail:isRun?'Pre or post run carb top-up':'2 pieces of fruit', cal:isRun?'~180 cal':'~150 cal'},
+    {id:'lunch',  label:'Lunch',     name:'Egg Fried Rice',          detail:'3 eggs · ¾ cup cooked rice · frozen mixed veg · soy sauce · garlic · sesame oil · spring onion', cal:'~520 cal / 28g protein'},
+    {id:'fruit2', label:'Snack',     name:hard?'Banana':'Skip if not hungry', detail:hard?'Afternoon energy on training days':'Rest day — trust appetite', cal:hard?'~100 cal':'optional'},
+    {id:'dinner', label:'Dinner',    name:'Protein + Potato + Veg',  detail:`150–200g chicken/salmon/pork mince · ${hard?'250g':'200g'} white or sweet potato · frozen veg · garlic + lemon + salt`, cal:hard?'~650 cal / 48g protein':'~560 cal / 42g protein'},
+    {id:'water',  label:'Hydration', name:'3L Water',                detail:"Spread through the day. Coffee doesn't count.", cal:'0 cal'},
+  ];
+}
+
+function getSets(w){
+  const reps={1:8,2:10,3:10,4:12}[w]||10;
+  const s={1:3,2:3,3:4,4:4}[w]||3;
+  return `${s}×${reps}`;
+}
+
+function getWorkout(day){
+  const w=getWeek(day), type=getDayType(day);
+  const workouts={
+    run:{title:DAY_NAMES.run, note:'Start easy — first 5 min walk. Track your time or distance and try to beat it each week.',
+      ex:[['run_main',w<=2?'25 min continuous run — comfortable pace':w===3?'30 min run — push the last 5 min':'35 min run or 5km attempt','',''],
+          ['run_cool','Cool-down walk','5 min',''],
+          ['run_burp','Burpees',`${w<=2?'3':'4'}×${w<=2?'8':'10'}`,''],
+          ['run_lat', 'Lateral Bounds','3×10 each side',''],
+          ['run_sqj', 'Squat Jump',`3×${w<=2?'8':'10'}`,''],
+    ]},
+    upper:{title:DAY_NAMES.upper, note:'Log weights every session. Previous week targets show automatically from Week 2 onwards.',
+      ex:[['up_bench','Barbell Bench Press',getSets(w),'kg'],
+          ['up_ohp',  'Overhead Press — barbell',getSets(w),'kg'],
+          ['up_row',  'Barbell Row',getSets(w),'kg'],
+          ['up_pu',   'Weighted Pull-Up',getSets(w),'kg'],
+          ['up_fly',  'Cable Chest Fly',getSets(w),'kg'],
+          ['up_fp',   'Face Pull — cable rope',`${w<=2?'3':'4'}×15`,'kg'],
+          ['up_er',   'Band External Rotation','3×20 each',''],
+          ['up_tri',  'Tricep Rope Pushdown',getSets(w),'kg'],
+          ['up_curl', 'Incline DB Curl',getSets(w),'kg'],
+          ['up_plank','Plank — weighted',`3×${w<=2?'40':'50'} sec`,'kg'],
+    ]},
+    lower:{title:DAY_NAMES.lower, note:'Strong glutes and hamstrings take load off the lumbar spine. These protect your back.',
+      ex:[['lo_squat','Barbell Back Squat',getSets(w),'kg'],
+          ['lo_dead', 'Romanian Deadlift',getSets(w),'kg'],
+          ['lo_hipth','Hip Thrust — barbell',getSets(w),'kg'],
+          ['lo_bss',  'Bulgarian Split Squat — DB',getSets(w),'kg'],
+          ['lo_legcl','Leg Curl — machine',getSets(w),'kg'],
+          ['lo_legex','Leg Extension — machine',getSets(w),'kg'],
+          ['lo_calf', 'Calf Raise — standing',`${w<=2?'3':'4'}×20`,'kg'],
+          ['lo_nord', 'Nordic Hamstring Curl',`3×${w<=2?'6':'8'} slow eccentric`,''],
+          ['lo_burp', 'Burpee',`${w<=2?'3':'4'}×${w<=2?'8':'10'}`,''],
+          ['lo_boxj', 'Box Jump',`${w<=2?'3':'4'}×6`,''],
+    ]},
+    rest:{title:DAY_NAMES.rest, note:'Active rest. Back mobility and jaw work still happen every day — keep the habit.',
+      ex:[['rst_walk','30–40 min walk','',''],
+          ['rst_swim','Light swim if available','',''],
+    ]},
+    fullbody:{title:DAY_NAMES.fullbody, note:'Compound supersets keep heart rate up for fat burn while building strength.',
+      ex:[['fb_dead', 'Deadlift',getSets(w),'kg'],
+          ['fb_bench','DB Bench Press',getSets(w),'kg'],
+          ['fb_purow','Pull-Up + DB Row superset',`${w<=2?'3':'4'}×(${w<=2?'6':'8'}+${w<=2?'10':'12'})`,'kg'],
+          ['fb_kbswg','Kettlebell Swing',`${w<=2?'4':'5'}×15`,'kg'],
+          ['fb_lunge','Walking Lunge — weighted',getSets(w),'kg'],
+          ['fb_pallof','Pallof Press — cable','3×12 each side','kg'],
+          ['fb_burpbj','Burpee to Box Jump',`${w<=2?'3':'4'}×${w<=2?'8':'10'}`,''],
+          ['fb_abwhl','Ab Wheel Rollout',`3×${w<=2?'10':'12'}`,''],
+          ['fb_dbug', 'Dead Bug','3×10 each',''],
+    ]},
+    conditioning:{title:DAY_NAMES.conditioning, note:'High intensity, short rest. Row erg is your best conditioning benchmark — track your times.',
+      ex:[['cd_row',  w<=2?'Row Erg — 2000m':'Row Erg — 6×500m @ 90sec rest','',''],
+          ['cd_burrow','Burpee into DB Row superset',`${w<=2?'4':'5'}×(8+10)`,'kg'],
+          ['cd_sqjmp','Squat Jump',`${w<=2?'4':'5'}×10`,''],
+          ['cd_latbnd','Lateral Bound','3×10 each',''],
+          ['cd_kbswg','Kettlebell Swing — heavy',`${w<=2?'4':'5'}×15`,'kg'],
+          ['cd_slrdl','Single-Leg RDL — KB','3×10 each','kg'],
+          ['cd_plyopu','Plyo Push-Up',`${w<=2?'3':'4'}×8`,''],
+          ['cd_sprint','Treadmill Sprint — 30 sec on/30 off',`${w<=2?'8':'12'} rounds`,''],
+    ]},
+  };
+  return workouts[type]||workouts.rest;
+}
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+function load(){ try{return JSON.parse(localStorage.getItem('staysharp_v1')||'{}')}catch(e){return{}} }
+function save(s){ try{localStorage.setItem('staysharp_v1',JSON.stringify(s))}catch(e){} }
+
+let S = load();
+if(!S.checked)S.checked={};
+if(!S.weights)S.weights={};
+if(!S.dayDone)S.dayDone={};
+if(!S.comments)S.comments={};
+
+// ── FORECAST ──────────────────────────────────────────────────────────────────
+function getForecast(exId, day, unit){
+  if(unit!=='kg') return null;
+  const prevDay = day-7;
+  if(prevDay<1) return null;
+  const prevKey = `d${prevDay}_${exId}`;
+  const prevVal = S.weights[prevKey];
+  if(!prevVal || isNaN(parseFloat(prevVal))) return null;
+  const prev = parseFloat(prevVal);
+
+  const curKey = `d${day}_${exId}`;
+  const curVal = S.weights[curKey];
+  const cur = curVal ? parseFloat(curVal) : null;
+
+  if(cur===null){
+    return {text:`Last week: ${prev} kg — aim to beat this`, color:'#c9a84c'};
+  }
+  const diff = cur - prev;
+  const next = cur + 2.5;
+  const diffText = diff>0 ? `+${diff.toFixed(1)} kg on last week` : diff<0 ? `${diff.toFixed(1)} kg vs last week` : 'matched last week';
+  const color = diff>0 ? '#3d9a68' : diff<0 ? '#d4784a' : '#c9a84c';
+  return {text:`${diffText} · Next week → ${next.toFixed(1)} kg`, color};
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function exKey(day,id){ return `d${day}_${id}`; }
+
+function renderExRow(day, ex, accentColor, showForecast){
+  const [id,name,sets,unit] = ex;
+  const key = exKey(day,id);
+  const checked = !!S.checked[key];
+  const weight = S.weights[key]||'';
+  const forecast = showForecast ? getForecast(id,day,unit) : null;
+
+  const div = document.createElement('div');
+  div.className = 'ex-row'+(checked?' checked':'');
+  div.id = `er-${key}`;
+
+  const btn = document.createElement('button');
+  btn.className = 'ex-check';
+  btn.textContent = '✓';
+  btn.style.borderColor = checked ? accentColor : '#2a2a2a';
+  btn.style.background = checked ? accentColor : 'none';
+  btn.onclick = ()=>toggleCheck(key, day, accentColor);
+  div.appendChild(btn);
+
+  const info = document.createElement('div');
+  info.style.minWidth='0';
+  const nm = document.createElement('div');
+  nm.className = 'ex-name';
+  nm.textContent = name;
+  info.appendChild(nm);
+  if(sets){
+    const st = document.createElement('div');
+    st.className = 'ex-sets';
+    st.textContent = sets;
+    info.appendChild(st);
+  }
+  if(forecast){
+    const fc = document.createElement('div');
+    fc.className = 'ex-forecast';
+    fc.id = `fc-${key}`;
+    fc.style.color = forecast.color;
+    fc.textContent = forecast.text;
+    info.appendChild(fc);
+  } else if(showForecast && unit==='kg'){
+    const fc = document.createElement('div');
+    fc.className = 'ex-forecast';
+    fc.id = `fc-${key}`;
+    info.appendChild(fc);
+  }
+  div.appendChild(info);
+
+  const right = document.createElement('div');
+  if(unit==='kg'){
+    const inp = document.createElement('input');
+    inp.type='number'; inp.step='0.5'; inp.min='0';
+    inp.className='weight-input';
+    inp.placeholder='kg';
+    inp.value=weight;
+    inp.oninput = e => {
+      S.weights[key]=e.target.value;
+      save(S);
+      // Update forecast
+      const fc = document.getElementById(`fc-${key}`);
+      if(fc){
+        const f = getForecast(id,day,unit);
+        if(f){fc.textContent=f.text;fc.style.color=f.color;}
+        else fc.textContent='';
+      }
+    };
+    right.appendChild(inp);
+  }
+  div.appendChild(right);
+  return div;
+}
+
+function renderMealRow(day, meal){
+  const key = exKey(day, meal.id);
+  const checked = !!S.checked[key];
+  const div = document.createElement('div');
+  div.className='meal-row'+(checked?' checked':'');
+  div.id=`mr-${key}`;
+
+  const btn=document.createElement('button');
+  btn.className='meal-check';
+  btn.textContent='✓';
+  if(checked){btn.style.background='#b05a2a';btn.style.color='white';}
+  btn.onclick=()=>toggleMeal(key,btn,div);
+  div.appendChild(btn);
+
+  const info=document.createElement('div');
+  info.style.cssText='flex:1;min-width:0';
+  info.innerHTML=`<div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap"><span class="meal-label">${meal.label}</span><span class="meal-name-text">${meal.name}</span></div><div class="meal-detail">${meal.detail}</div>`;
+  div.appendChild(info);
+
+  const cal=document.createElement('div');
+  cal.className='meal-cal';
+  cal.textContent=meal.cal;
+  div.appendChild(cal);
+  return div;
+}
+
+function toggleCheck(key, day, color){
+  S.checked[key]=!S.checked[key];
+  save(S);
+  const row=document.getElementById(`er-${key}`);
+  if(!row)return;
+  row.classList.toggle('checked',S.checked[key]);
+  const btn=row.querySelector('.ex-check');
+  if(btn){
+    btn.style.borderColor=S.checked[key]?color:'#2a2a2a';
+    btn.style.background=S.checked[key]?color:'none';
+    btn.style.color=S.checked[key]?'white':'transparent';
+  }
+}
+
+function toggleMeal(key,btn,div){
+  S.checked[key]=!S.checked[key];
+  save(S);
+  div.classList.toggle('checked',S.checked[key]);
+  btn.style.background=S.checked[key]?'#b05a2a':'none';
+  btn.style.color=S.checked[key]?'white':'transparent';
+}
+
+function toggleDone(day){
+  S.dayDone[day]=!S.dayDone[day];
+  save(S);
+  const card=document.getElementById(`card-${day}`);
+  const btn=document.getElementById(`done-${day}`);
+  if(card){
+    card.classList.toggle('done',S.dayDone[day]);
+    const num=card.querySelector('.day-num');
+    if(num)num.style.color=S.dayDone[day]?'#2a8fb0':'#2a2a2a';
+  }
+  if(btn)btn.textContent=S.dayDone[day]?'✓ Day Complete':'Mark Day Complete';
+  updateProgress();
+  buildTabs();
+}
+
+function toggleDay(day){
+  const card=document.getElementById(`card-${day}`);
+  if(card)card.classList.toggle('open');
+}
+
+function updateProgress(){
+  const done=Object.values(S.dayDone).filter(Boolean).length;
+  const el=document.getElementById('prog-val');
+  const fill=document.getElementById('prog-fill');
+  if(el)el.textContent=`${done} / 30 Days`;
+  if(fill)fill.style.width=`${(done/30)*100}%`;
+}
+
+function sectionLabel(text,color){
+  const div=document.createElement('div');
+  div.className='section-label';
+  const span=document.createElement('span');
+  span.textContent=text;
+  span.style.color=color;
+  div.appendChild(span);
+  return div;
+}
+
+function coachNote(text,color){
+  const div=document.createElement('div');
+  div.className='coach-note';
+  div.style.borderLeftColor=color||'#c9a84c';
+  div.innerHTML=`<strong style="color:${color||'#c9a84c'}">Coach</strong><br>${text}`;
+  return div;
+}
+
+function buildDayCard(day){
+  const w=getWorkout(day);
+  const week=getWeek(day);
+  const type=getDayType(day);
+  const isRest=type==='rest';
+  const isDone=!!S.dayDone[day];
+  const color=TYPE_COLORS[type]||'#2a8fb0';
+  const dow=getDow(day);
+  const jaw=getJaw(week);
+  const meals=getMeals(day);
+
+  const card=document.createElement('div');
+  card.className='day-card'+(isDone?' done':'');
+  card.id=`card-${day}`;
+
+  // Header
+  const hdr=document.createElement('div');
+  hdr.className='day-header';
+  hdr.onclick=()=>toggleDay(day);
+  hdr.innerHTML=`
+    <div>
+      <div class="day-num" style="color:${isDone?'#2a8fb0':'#2a2a2a'}">${String(day).padStart(2,'0')}</div>
+      <div class="day-dow">${DOWS[dow]}</div>
+    </div>
+    <div style="flex:1;min-width:0">
+      <div class="day-title" style="color:${color}">${w.title}</div>
+      <div class="day-week">Week ${week} · ${isRest?'Rest & Recover':type==='run'?'Cardio + Plyos':'Strength'}</div>
+    </div>
+    <div class="day-chevron">▼</div>`;
+  card.appendChild(hdr);
+
+  // Body
+  const body=document.createElement('div');
+  body.className='day-body';
+
+  // Roman Chair (non-rest)
+  if(!isRest){
+    const sec=document.createElement('div');
+    sec.className='section';
+    sec.appendChild(sectionLabel('Roman Chair Warm-Up','#e8c97a'));
+    ROMAN.forEach(ex=>sec.appendChild(renderExRow(day,[ex.id,ex.name,ex.sets,ex.unit],'#c9a84c',false)));
+    body.appendChild(sec);
+  }
+
+  // Workout
+  const wsec=document.createElement('div');
+  wsec.className='section';
+  wsec.appendChild(sectionLabel(isRest?'Active Recovery':'Workout',color));
+  w.ex.forEach(ex=>wsec.appendChild(renderExRow(day,ex,color,true)));
+  wsec.appendChild(coachNote(w.note,color));
+  body.appendChild(wsec);
+
+  // Back mobility
+  const bsec=document.createElement('div');
+  bsec.className='section';
+  bsec.appendChild(sectionLabel('Back Mobility — S-Curve','#c4603a'));
+  BACK.forEach(ex=>bsec.appendChild(renderExRow(day,[ex.id,ex.name,ex.sets,ex.unit],'#7a3a2a',false)));
+  const bnote=document.createElement('div');
+  bnote.className='coach-note';
+  bnote.style.borderLeftColor='#7a3a2a';
+  bnote.innerHTML='<strong style="color:#c4603a">Back Note</strong><br>Side bend RIGHT only — opens compressed left lumbar. Thread the needle LEFT arm — counteracts thoracic curve. Breathe into left ribs on exhale. Dead hang before and after every lifting session.';
+  bsec.appendChild(bnote);
+  body.appendChild(bsec);
+
+  // Jaw
+  const jsec=document.createElement('div');
+  jsec.className='section';
+  jsec.appendChild(sectionLabel('Jaw Program','#aa6abd'));
+  jaw.forEach(ex=>jsec.appendChild(renderExRow(day,[ex.id,ex.name,ex.sets,ex.unit],'#8b4a9c',false)));
+  const jnote=document.createElement('div');
+  jnote.className='coach-note';
+  jnote.style.borderLeftColor='#8b4a9c';
+  jnote.innerHTML=`<strong style="color:#aa6abd">Jaw</strong><br>Mewing all day — tongue flat to roof of mouth. Week ${week<=2?'1–2':'3–4'} volume.`;
+  jsec.appendChild(jnote);
+  body.appendChild(jsec);
+
+  // Meals
+  const msec=document.createElement('div');
+  msec.className='section';
+  msec.appendChild(sectionLabel('Nutrition','#d4784a'));
+  meals.forEach(m=>msec.appendChild(renderMealRow(day,m)));
+  body.appendChild(msec);
+
+  // Comments
+  const csec=document.createElement('div');
+  csec.className='section';
+  csec.appendChild(sectionLabel('Notes & Comments','#6a6460'));
+  const ta=document.createElement('textarea');
+  ta.className='comments-textarea';
+  ta.placeholder='How did it go? Weights hit, energy levels, anything for next session...';
+  ta.value=S.comments[day]||'';
+  ta.oninput=e=>{S.comments[day]=e.target.value;save(S);};
+  csec.appendChild(ta);
+  body.appendChild(csec);
+
+  // Complete btn
+  const doneBtn=document.createElement('button');
+  doneBtn.className='complete-btn';
+  doneBtn.id=`done-${day}`;
+  doneBtn.textContent=isDone?'✓ Day Complete':'Mark Day Complete';
+  doneBtn.onclick=()=>toggleDone(day);
+  body.appendChild(doneBtn);
+
+  card.appendChild(body);
+  return card;
+}
+
+// ── WEEKS & TABS ──────────────────────────────────────────────────────────────
+const WEEKS=[
+  {label:'Week 1',days:[1,2,3,4,5,6,7],desc:'Establish baseline weights. Log everything — this seeds all future forecasts.'},
+  {label:'Week 2',days:[8,9,10,11,12,13,14],desc:'Week 2 targets auto-populate from Week 1 logs. Aim to beat every number.'},
+  {label:'Week 3',days:[15,16,17,18,19,20,21],desc:'Volume increases — sets go to 4. Forecasts show Week 2 weights as targets.'},
+  {label:'Week 4',days:[22,23,24,25,26,27,28],desc:'Peak week. Heavier, more reps. Your full 4-week progression shows in every exercise.'},
+  {label:'+ Days',days:[29,30],desc:'Final 2 days. Finish strong.'},
+];
+const EXTRA=['Guide','Stats'];
+let currentTab=0;
+
+function buildTabs(){
+  const container=document.getElementById('tabs');
+  container.innerHTML='';
+  WEEKS.forEach((w,i)=>{
+    const done=w.days.filter(d=>S.dayDone[d]).length;
+    const div=document.createElement('div');
+    div.className='tab'+(currentTab===i?' active':'');
+    div.innerHTML=w.label+(done>0?`<span class="cnt">${done}/${w.days.length}</span>`:'');
+    div.onclick=()=>showTab(i);
+    container.appendChild(div);
+  });
+  EXTRA.forEach((label,i)=>{
+    const div=document.createElement('div');
+    div.className='tab'+(currentTab===WEEKS.length+i?' active':'');
+    div.textContent=label;
+    div.onclick=()=>showTab(WEEKS.length+i);
+    container.appendChild(div);
+  });
+}
+
+function showTab(idx){
+  currentTab=idx;
+  buildTabs();
+  buildContent();
+}
+
+function buildContent(){
+  const main=document.getElementById('main');
+  main.innerHTML='';
+
+  if(currentTab<WEEKS.length){
+    const wk=WEEKS[currentTab];
+    const hdr=document.createElement('div');
+    hdr.className='week-header';
+    hdr.innerHTML=`<div class="week-title">WEEK ${currentTab+1}</div><div class="week-desc">${wk.desc}</div>`;
+    main.appendChild(hdr);
+    wk.days.forEach(day=>main.appendChild(buildDayCard(day)));
+  } else if(currentTab===WEEKS.length){
+    buildGuide(main);
+  } else {
+    buildStats(main);
+  }
+}
+
+function buildGuide(main){
+  const cards=[
+    {title:'How Forecasting Works',color:'#2a8fb0',body:`When you log a weight for any exercise, the app remembers it.\n\nThe following week, on the same exercise, it shows: "Last week: X kg — aim to beat this" before you've logged anything.\n\nOnce you log this week's weight it shows the difference and projects next week automatically (+2.5 kg). Green means you beat last week. Orange means you dropped. No scrolling back through old sessions.`},
+    {title:'Weekly Structure',color:'#e8c97a',body:`Monday — Run + Plyos. Cardio base and explosive power.\nTuesday — Upper Body. Chest, shoulders, back, arms.\nWednesday — Lower Body. Squats, hinge, glutes, hamstrings.\nThursday — Rest. Back mobility and jaw still happen.\nFriday — Full Body. Compound supersets.\nSaturday — Conditioning. Row erg, KB swings, sprints.\nSunday — Rest. Walk, stretch, recover.`},
+    {title:'Roman Chair Warm-Up',color:'#c9a84c',body:`Every training day starts with Roman chair before anything else.\n\nBack extensions build the erector spinae which directly supports your scoliosis curve. Side bends and isometric holds train the muscles that resist lateral deviation.\n\nKeep these controlled and deliberate — this is targeted back strengthening, not a power movement.`},
+    {title:'Back Mobility — S-Curve Specific',color:'#c4603a',body:`Your lumbar curves LEFT and thoracic curves RIGHT with a left rib hump.\n\nSide bend RIGHT only — opens the compressed left lumbar side. Never stretch left — reinforces the curve.\n\nThread the needle LEFT arm bias — rotates thoracic spine against your right thoracic curve.\n\nLeft side rib breathing — lie on left side, breathe deep, let left ribs sink on exhale. This is clinical scoliosis management.\n\nDead hang decompresses the lumbar spine passively — do before and after every lifting session.`},
+    {title:'Egg Fried Rice — Lunch Recipe',color:'#d4784a',body:`Ingredients (1 serve):\n• ¾ cup cooked rice (day-old is best)\n• 3 eggs\n• 1 large handful frozen mixed veg\n• 1 tbsp soy sauce\n• 1 tsp sesame oil\n• 2 cloves garlic or ½ tsp garlic powder\n• Spring onion to finish\n\nMethod (8 min):\n1. Heat pan high with a little oil\n2. Add frozen veg straight in — stir fry 2 min\n3. Push to side, crack eggs in, scramble\n4. Add rice, mix everything together\n5. Add garlic, soy sauce, sesame oil — toss 2 min\n6. Top with spring onion and serve\n\n~520 cal · 28g protein · 55g carb · 14g fat\n\nBatch tip: Cook big pot of rice Sunday. Takes 8 min per serve from there.`},
+    {title:'Taco Bowl Swap',color:'#d4784a',body:`Swap lunch occasionally for:\n• 150g pork mince raw (= ~115g cooked)\n• El Toro taco seasoning\n• ¾ cup cooked rice\n• 30g grated cheese\n• 1 medium flour tortilla\n\n~620 cal · 38g protein · 55g carb · 22g fat`},
+    {title:'Nutrition Summary',color:'#3d9a68',body:`Coffee to start. Overnight oats + yogurt breakfast. Egg fried rice for lunch. Fruit snacks. Protein + potato + veg for dinner. 3L water daily.\n\nTraining days: extra fruit or banana pre/post workout.\nRest days: skip the afternoon snack.\nAlcohol stalls fat loss 2–3 days per session.`},
+  ];
+
+  const hdr=document.createElement('div');
+  hdr.className='week-header';
+  hdr.innerHTML='<div class="week-title" style="color:#6a6460">GUIDE</div>';
+  main.appendChild(hdr);
+
+  cards.forEach(c=>{
+    const card=document.createElement('div');
+    card.className='guide-card';
+    card.innerHTML=`<div class="guide-title" style="color:${c.color}">${c.title}</div><div class="guide-body">${c.body}</div>`;
+    main.appendChild(card);
+  });
+}
+
+function buildStats(main){
+  const done=Object.values(S.dayDone).filter(Boolean).length;
+  const exChecked=Object.values(S.checked).filter(Boolean).length;
+  const weights=S.weights||{};
+
+  function heaviest(kw){
+    const vals=Object.entries(weights).filter(([k])=>k.includes(kw)).map(([,v])=>parseFloat(v)||0);
+    return vals.length?Math.max(...vals):null;
+  }
+
+  const dl=heaviest('dead');
+  const bench=heaviest('bench');
+  const squat=heaviest('squat');
+
+  const hdr=document.createElement('div');
+  hdr.className='week-header';
+  hdr.innerHTML='<div class="week-title" style="color:#6a6460">YOUR STATS</div>';
+  main.appendChild(hdr);
+
+  const grid=document.createElement('div');
+  grid.className='stats-grid';
+  const stats=[{v:done,l:'Days Complete'},{v:30-done,l:'Days Remaining'},{v:exChecked,l:'Exercises Logged'},{v:Math.round((done/30)*100)+'%',l:'Complete'}];
+  stats.forEach(s=>{
+    const box=document.createElement('div');
+    box.className='stat-box';
+    box.innerHTML=`<div class="stat-val">${s.v}</div><div class="stat-lbl">${s.l}</div>`;
+    grid.appendChild(box);
+  });
+  main.appendChild(grid);
+
+  if(dl||bench||squat){
+    const grid2=document.createElement('div');
+    grid2.className='stats-grid';
+    grid2.style.gridTemplateColumns='1fr 1fr 1fr';
+    [[dl,'Best Deadlift'],[bench,'Best Bench'],[squat,'Best Squat']].filter(([v])=>v).forEach(([v,l])=>{
+      const box=document.createElement('div');
+      box.className='stat-box';
+      box.innerHTML=`<div class="stat-val">${v}kg</div><div class="stat-lbl">${l}</div>`;
+      grid2.appendChild(box);
+    });
+    main.appendChild(grid2);
+  }
+
+  const card=document.createElement('div');
+  card.className='guide-card';
+  card.innerHTML=`<div class="guide-title">Week-on-Week Tracking</div><div class="guide-body">Every kg exercise shows last week's weight as your target when you open a new week. After you log this week, it shows improvement and projects next week automatically. No scrolling back through old sessions.</div>`;
+  main.appendChild(card);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+buildTabs();
+buildContent();
+updateProgress();
+</script>
+</body>
+</html>
